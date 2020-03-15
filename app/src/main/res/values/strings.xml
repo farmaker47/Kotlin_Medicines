@@ -9,4 +9,27 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="transition_photo" translatable="false">transition_photo</string>
+    <string name="genika">General info:</string>
+    <string name="kodikos_EOF">EOF code:</string>
+    <string name="nomiko_Kathestos">Legal status:</string>
+    <string name="morfi">Form:</string>
+    <string name="e_mail_etairias" translatable="false">e-mail:</string>
+    <string name="periektikotita">Content:</string>
+    <string name="odosXorigisis">Route of administration:</string>
+    <string name="farmakologikiKatigoria">Pharmacological Category(s):</string>
+    <string name="kodikos_ATC">ATC code:</string>
+    <string name="perigrafi_ATC">Description:</string>
+    <string name="drastikaSistatika">Active ingredients:</string>
+    <string name="ypefthinos_kikloforias">Marketing officer:</string>
+    <string name="onomasia_etairias">Company\'s name:</string>
+    <string name="address_etairias">Company\'s address:</string>
+    <string name="tilefono_etairias">Telephone:</string>
+    <string name="fax_etairias">Fax:</string>
+    <string name="tekmiriosi">Medicine\'s leaflets:</string>
+    <string name="perilipsiXaraktiristikon">Product Features Summary:</string>
+    <string name="fyloOdigion">User guide sheet:</string>
+    <string name="ekthesiAksiologisis">Public Evaluation Report:</string>
+    <string name="search_autocomplete_fragment_hint">Input at least 4 characters</string>
 </resources>

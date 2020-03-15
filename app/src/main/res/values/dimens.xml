@@ -1,3 +1,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">260dp</dimen>
+    <dimen name="progressBar">48dp</dimen>
+    <dimen name="image_search_empty_view_width">170dp</dimen>
+    <dimen name="image_search_empty_view_height">150dp</dimen>
+    <dimen name="cardViewHeight">88dp</dimen>
 </resources>

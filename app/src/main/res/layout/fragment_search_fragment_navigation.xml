@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff"
-    tools:context="com.george.tabbedactivity_medicines.ui.main.SearchFragmentNavigation">
-
-    <RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools">
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="#fff"
+        tools:context="com.george.kotlin_medicines.SearchFragmentNavigation">
 
-        <com.george.tabbedactivity_medicines.ui.utils.LollipopFixedWebView
-            android:id="@+id/webViewEof"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/autoSearchNavigation"
-            android:visibility="invisible" />
+            android:orientation="vertical">
 
+            <com.george.kotlin_medicines.utils.LollipopFixedWebView
+                android:id="@+id/webViewEof"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/autoSearchNavigation"
+                android:visibility="visible" />
 
-        <com.george.tabbedactivity_medicines.ui.utils.ClearableAutoComplete2
-            android:id="@+id/autoSearchNavigation"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/auto_border"
-            android:drawablePadding="10dp"
-            android:hint="@string/search_autocomplete_fragment_hint"
-            android:minHeight="44dp"
-            android:padding="16dp" />
+            <com.george.kotlin_medicines.utils.ClearableAutoComplete2
+                android:id="@+id/autoSearchNavigation"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/auto_border"
+                android:drawablePadding="10dp"
+                android:hint="@string/search_autocomplete_fragment_hint"
+                android:minHeight="44dp"
+                android:padding="16dp" />
 
-        <ImageView
-            android:id="@+id/imageSearchFragment"
-            android:layout_width="@dimen/image_search_empty_view_width"
-            android:layout_height="@dimen/image_search_empty_view_height"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_recipe_logo"
-            android:scaleType="fitXY"/>
+            <ImageView
+                android:id="@+id/imageSearchFragment"
+                android:layout_width="@dimen/image_search_empty_view_width"
+                android:layout_height="@dimen/image_search_empty_view_height"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_recipe_logo"
+                android:scaleType="fitXY"/>
 
-        <com.george.tabbedactivity_medicines.ui.utils.SoloupisEmptyRecyclerView
-            android:id="@+id/recyclerViewSearchFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/autoSearchNavigation" />
+            <com.george.kotlin_medicines.utils.SoloupisEmptyRecyclerView
+                android:id="@+id/recyclerViewSearchFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/autoSearchNavigation" />
 
+            <ProgressBar
+                android:id="@+id/progressSearchFragment"
+                android:layout_width="@dimen/progressBar"
+                android:layout_height="@dimen/progressBar"
+                android:layout_below="@id/autoSearchNavigation"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/colorBlue"
+                android:indeterminateTintMode="src_atop"
+                android:visibility="invisible" />
 
-        <ProgressBar
-            android:id="@+id/progressSearchFragment"
-            android:layout_width="@dimen/progressBar"
-            android:layout_height="@dimen/progressBar"
-            android:layout_below="@id/autoSearchNavigation"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/colorBlue"
-            android:indeterminateTintMode="src_atop"
-            android:visibility="invisible" />
+        </RelativeLayout>
 
+    </FrameLayout>
 
-    </RelativeLayout>
-
-</FrameLayout>
+</layout>

@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.george.kotlin_medicines.databinding.SearchFragmentAdapterBinding
 import java.util.*
 
 class SearchFragmentNavigationAdapter(
-    private val mContext: Context,
+    val mContext: Context,
     private var hitsList: ArrayList<String>?,
     private val mSearchClickItemListener: SearchClickItemListener
 ) :
     RecyclerView.Adapter<SearchFragmentNavigationAdapter.NavigationAdapterViewHolder>() {
+
+    private lateinit var binding: SearchFragmentAdapterBinding
 
     interface SearchClickItemListener {
         fun onListItemClick(
@@ -28,6 +32,15 @@ class SearchFragmentNavigationAdapter(
         parent: ViewGroup,
         i: Int
     ): NavigationAdapterViewHolder {
+
+        val inflater = LayoutInflater.from(parent.context)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.search_fragment_adapter,
+            parent,
+            false
+        )
+
         return NavigationAdapterViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.search_fragment_adapter, parent, false)
@@ -38,12 +51,8 @@ class SearchFragmentNavigationAdapter(
         holder: NavigationAdapterViewHolder,
         position: Int
     ) {
-
         //setting the name at the textView
-        holder.textViewHolder.text = hitsList!![position]
-        holder.imageViewHolder.setImageDrawable(
-            mContext.resources.getDrawable(R.drawable.medicine)
-        )
+        holder.bind(position)
     }
 
     override fun getItemCount(): Int {
@@ -56,6 +65,7 @@ class SearchFragmentNavigationAdapter(
 
     inner class NavigationAdapterViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
         val textViewHolder: TextView
         val imageViewHolder: ImageView
         override fun onClick(view: View) {
@@ -68,10 +78,17 @@ class SearchFragmentNavigationAdapter(
         }
 
         init {
+
             textViewHolder = itemView.findViewById(R.id.textViewFragmentAdapter)
-            imageViewHolder =
-                itemView.findViewById(R.id.imageFragmentAdapter)
+            imageViewHolder = itemView.findViewById(R.id.imageFragmentAdapter)
             itemView.setOnClickListener(this)
+        }
+
+        fun bind(
+            position: Int
+        ) {
+            textViewHolder.text = hitsList!![position]
+            imageViewHolder.setImageResource(R.drawable.medicine)
         }
     }
 

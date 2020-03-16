@@ -43,8 +43,7 @@
                 android:id="@+id/recyclerViewSearchFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/autoSearchNavigation"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                android:layout_below="@id/autoSearchNavigation"/>
 
             <ProgressBar
                 android:id="@+id/progressSearchFragment"

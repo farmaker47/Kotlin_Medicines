@@ -24,7 +24,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [SearchFragmentNavigation.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SearchFragmentNavigation : Fragment() , SearchFragmentNavigationAdapter.SearchClickItemListener{
+class SearchFragmentNavigation : Fragment(),
+    SearchFragmentNavigationAdapter.SearchClickItemListener {
     private var param1: String? = null
     private var param2: String? = null
 
@@ -65,11 +66,10 @@ class SearchFragmentNavigation : Fragment() , SearchFragmentNavigationAdapter.Se
         progressBarSearchFragment = binding.progressSearchFragment
 
         //setting the empty view, only with custom Recycler view
-        //setting the empty view, only with custom Recycler view
         mRecyclerViewSearchFragment.setEmptyView(imageViewSearchFragment)
-
         mRecyclerViewSearchFragment.setHasFixedSize(true)
-        mRecyclerViewSearchFragment.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        mRecyclerViewSearchFragment.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         mSearchFragmentNavigationAdapter =
             SearchFragmentNavigationAdapter(activity!!, hitaList, this)
         mRecyclerViewSearchFragment.adapter = mSearchFragmentNavigationAdapter

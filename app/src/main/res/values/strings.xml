@@ -33,6 +33,9 @@
     <string name="ekthesiAksiologisis">Public Evaluation Report:</string>
     <string name="search_autocomplete_fragment_hint">Input at least 4 characters</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="please_connect_to_internet">No internet connection!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_internet">No internet connection!</string>
+    <string name="no_results">Try again.. no results found!</string>
+    <string name="eof_error">Eof server is down..try again later</string>
 </resources>

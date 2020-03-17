@@ -1,18 +1,34 @@
 package com.george.kotlin_medicines
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.JsonReader
+import android.util.JsonToken
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.widget.EditText
+import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
+import android.webkit.ValueCallback
 import android.widget.ImageView
-import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.george.kotlin_medicines.databinding.FragmentSearchFragmentNavigationBinding
-import com.george.kotlin_medicines.utils.SoloupisEmptyRecyclerView
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+import java.io.IOException
+import java.io.StringReader
+import java.util.*
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,16 +45,12 @@ class SearchFragmentNavigation : Fragment(),
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var webView: WebView
     private lateinit var binding: FragmentSearchFragmentNavigationBinding
     val URL_TO_SERVE = "https://services.eof.gr/drugsearch/SearchName.iface"
 
-    private lateinit var editTextView: EditText
-    private lateinit var mRecyclerViewSearchFragment: SoloupisEmptyRecyclerView
-    private lateinit var imageViewSearchFragment: ImageView
-    private lateinit var progressBarSearchFragment: ProgressBar
-    private var hitaList: ArrayList<String> = arrayListOf("George", "Mary")
+    private var hitaList: ArrayList<String> = ArrayList()
     private lateinit var mSearchFragmentNavigationAdapter: SearchFragmentNavigationAdapter
+    val timer: Timer = Timer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,26 +71,116 @@ class SearchFragmentNavigation : Fragment(),
             container,
             false
         )
-        webView = binding.webViewEof
-        editTextView = binding.autoSearchNavigation
-        mRecyclerViewSearchFragment = binding.recyclerViewSearchFragment
-        imageViewSearchFragment = binding.imageSearchFragment
-        progressBarSearchFragment = binding.progressSearchFragment
+
+        //Upon creation we check if there is internet connection
+        val connMgr =
+            activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.activeNetworkInfo
+        // If there is a network connection, fetch data
+        if (networkInfo != null && networkInfo.isConnected) {
+            //TODO
+        } else {
+            Toast.makeText(activity, R.string.please_connect_to_internet, Toast.LENGTH_SHORT)
+                .show()
+        }
 
         //setting the empty view, only with custom Recycler view
-        mRecyclerViewSearchFragment.setEmptyView(imageViewSearchFragment)
-        mRecyclerViewSearchFragment.setHasFixedSize(true)
-        mRecyclerViewSearchFragment.layoutManager =
+        binding.recyclerViewSearchFragment.setEmptyView(binding.imageSearchFragment)
+        binding.recyclerViewSearchFragment.setHasFixedSize(true)
+        binding.recyclerViewSearchFragment.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         mSearchFragmentNavigationAdapter =
             SearchFragmentNavigationAdapter(activity!!, hitaList, this)
-        mRecyclerViewSearchFragment.adapter = mSearchFragmentNavigationAdapter
+        binding.recyclerViewSearchFragment.adapter = mSearchFragmentNavigationAdapter
 
+
+        //EditText with timer
+        binding.autoSearchNavigation.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+
+                // user is typing: reset already started timer (if existing)
+                if (timer != null) {
+/*
+                    timer.cancel()
+*/
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                if (binding.autoSearchNavigation.length() >= 4 && networkInfo != null && networkInfo.isConnected) {
+                    timer.schedule(object : TimerTask() {
+                        override fun run() {
+
+                            //we determine if it is on creation or after rotation
+                            if (savedInstanceState == null) {
+
+                                //actions in specific row
+                                activity!!.runOnUiThread {
+                                    hideKeyboard()
+                                    fetchInfo(binding.autoSearchNavigation.text.toString().trim())
+                                    binding.progressSearchFragment.visibility = View.VISIBLE
+                                }
+                            } /*else if (savedInstanceState != null) {
+                                activity!!.runOnUiThread {
+                                    hideKeyboard()
+                                    fetchInfo(binding.autoSearchNavigation.text.toString().trim())
+                                    progressBarSearchFragment.visibility = View.VISIBLE
+                                }
+                            }*/
+                        }
+                    }, 900)
+                }
+            }
+        })
+
+        //clicking X button at right inside autocomplete
+
+        //clicking X button at right inside autocomplete
+        binding.autoSearchNavigation.setOnTouchListener(OnTouchListener { view, motionEvent ->
+            val DRAWABLE_LEFT = 0
+            val DRAWABLE_TOP = 1
+            val DRAWABLE_RIGHT = 2
+            val DRAWABLE_BOTTOM = 3
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                if (motionEvent.rawX >= binding.autoSearchNavigation.right - binding.autoSearchNavigation.compoundDrawables[DRAWABLE_RIGHT].bounds.width()
+                ) {
+                    // your action here
+                    //First click back button
+                    binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:btnBack');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()")
+                    //then do process
+                    binding.autoSearchNavigation.setText("")
+                    clearDataOfList()
+                    showKeyboard()
+                    return@OnTouchListener true
+                } else if (motionEvent.rawX < binding.autoSearchNavigation.compoundDrawables[DRAWABLE_LEFT].bounds.width() - binding.autoSearchNavigation.left
+                ) {
+
+                    //TODO
+                    /*IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                            integrator.initiateScan();*/
+                    return@OnTouchListener true
+                }
+            }
+            false
+        })
 
         //Enable Javascript
-        webView.settings.javaScriptEnabled = true
+        binding.webViewEof.settings.javaScriptEnabled = true
         //Clear All and load url
-        webView.loadUrl(URL_TO_SERVE)
+        binding.webViewEof.loadUrl(URL_TO_SERVE)
 
 
 
@@ -105,7 +207,120 @@ class SearchFragmentNavigation : Fragment(),
             }
     }
 
+
+    private fun showKeyboard() {
+        val show = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        show.showSoftInput(binding.autoSearchNavigation, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun hideKeyboard() {
+        val hide = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        hide.hideSoftInputFromWindow(binding.autoSearchNavigation.getApplicationWindowToken(), 0)
+    }
+
+    private fun clearDataOfList() {
+        mSearchFragmentNavigationAdapter.setHitsData(ArrayList())
+        mSearchFragmentNavigationAdapter.notifyDataSetChanged()
+    }
+
     override fun onListItemClick(itemIndex: Int, sharedImage: ImageView?, type: String?) {
         TODO("Not yet implemented")
     }
+
+    private fun fetchInfo(queryString: String) {
+
+        //Put value
+        binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:txtDrname').value='$queryString';})()")
+        val connMgr =
+            context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.activeNetworkInfo
+        // If there is a network connection, fetch info
+        if (networkInfo != null && networkInfo.isConnected) {
+
+            //Click button
+            binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:btnSubmit');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()")
+
+            //Wait 2 seconds
+            val handler = Handler()
+            handler.postDelayed({
+                binding.webViewEof.evaluateJavascript(
+                    "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
+                    ValueCallback<String?> { html ->
+                        //Make progressBar disappear
+                        binding.progressSearchFragment.visibility = View.INVISIBLE
+                        val reader =
+                            JsonReader(StringReader(html))
+                        reader.isLenient = true
+                        try {
+                            if (reader.peek() == JsonToken.STRING) {
+                                val domStr = reader.nextString()
+                                domStr?.let { parseSecondColumn(it) }
+                            }
+                        } catch (e: IOException) {
+                            // handle exception
+                        }
+                    })
+            }, 2000)
+        } else {
+            Toast.makeText(context, R.string.no_internet, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun parseSecondColumn(html: String) {
+        val builder = StringBuilder()
+        val arrayForTextView =
+            ArrayList<String>()
+        val doc = Jsoup.parse(html)
+        if (checkElement(
+                doc.select("table[id=form1:tblResults]").first()
+            )
+        ) {
+            //Select column that attribute ends in lnkDRNAME
+            val row =
+                doc.select("table[id=form1:tblResults]").select(".iceDatTblCol2")
+                    .select("a[id$=lnkDRNAME]")
+            if (row != null) {
+                for (element in row) {
+                    val text = element.text()
+                    arrayForTextView.add(text)
+                }
+                if (arrayForTextView.size == 0) {
+                    Toast.makeText(activity, R.string.no_results, Toast.LENGTH_LONG).show()
+                }
+                for (i in arrayForTextView.indices) {
+                    builder.append(arrayForTextView[i]).append("\n")
+                    var parsedText: String = builder.toString()
+                }
+                mSearchFragmentNavigationAdapter.setHitsData(arrayForTextView)
+                //we reset position to 0
+                binding.recyclerViewSearchFragment.smoothScrollToPosition(0)
+                binding.recyclerViewSearchFragment.layoutManager?.scrollToPosition(0)
+
+                //running the animation at the beggining of showing the list
+                runLayoutAnimation(binding.recyclerViewSearchFragment)
+            }
+        } else {
+            //In case server is down for maintenance
+            Toast.makeText(activity, R.string.eof_error, Toast.LENGTH_LONG).show()
+            Objects.requireNonNull(activity)!!.finish()
+        }
+    }
+
+    fun checkElement(elem: Element?): Boolean {
+        return elem != null
+    }
+
+    private fun runLayoutAnimation(recyclerView: RecyclerView) {
+        val context = recyclerView.context
+        val controller =
+            AnimationUtils.loadLayoutAnimation(
+                context,
+                R.anim.layout_animation_fall_down
+            )
+        recyclerView.layoutAnimation = controller
+        Objects.requireNonNull(recyclerView.adapter)?.notifyDataSetChanged()
+        recyclerView.scheduleLayoutAnimation()
+    }
+
 }

@@ -80,8 +80,7 @@ class SearchFragmentNavigation : Fragment(),
         if (networkInfo != null && networkInfo.isConnected) {
             //TODO
         } else {
-            Toast.makeText(activity, R.string.please_connect_to_internet, Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(activity, R.string.please_connect_to_internet, Toast.LENGTH_SHORT).show()
         }
 
         //setting the empty view, only with custom Recycler view
@@ -220,7 +219,6 @@ class SearchFragmentNavigation : Fragment(),
 
     private fun clearDataOfList() {
         mSearchFragmentNavigationAdapter.setHitsData(ArrayList())
-        mSearchFragmentNavigationAdapter.notifyDataSetChanged()
     }
 
     override fun onListItemClick(itemIndex: Int, sharedImage: ImageView?, type: String?) {

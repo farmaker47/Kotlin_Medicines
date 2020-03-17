@@ -6,6 +6,7 @@
         android:layout_height="88dp"
         android:clickable="true"
         android:focusable="true"
+        android:layout_margin="4dp"
         android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout

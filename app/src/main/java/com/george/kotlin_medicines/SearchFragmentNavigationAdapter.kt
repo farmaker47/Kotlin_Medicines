@@ -75,7 +75,9 @@ class SearchFragmentNavigationAdapter(
 
     fun setHitsData(list: ArrayList<String>?) {
         hitsList = list
-        /*notifyDataSetChanged();*/
+/*
+        notifyDataSetChanged();
+*/
     }
 
     companion object {

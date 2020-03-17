@@ -3,14 +3,14 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/cardViewHeight"
-        android:layout_margin="4dp"
+        android:layout_height="88dp"
         android:clickable="true"
+        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="88dp"
             android:layout_gravity="center_vertical">
 
             <ImageView

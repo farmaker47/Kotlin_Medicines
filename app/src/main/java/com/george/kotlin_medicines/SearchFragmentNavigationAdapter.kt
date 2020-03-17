@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.george.kotlin_medicines.databinding.SearchFragmentAdapterBinding
 import java.util.*
@@ -17,8 +18,6 @@ class SearchFragmentNavigationAdapter(
     private val mSearchClickItemListener: SearchClickItemListener
 ) :
     RecyclerView.Adapter<SearchFragmentNavigationAdapter.NavigationAdapterViewHolder>() {
-
-    private lateinit var binding: SearchFragmentAdapterBinding
 
     interface SearchClickItemListener {
         fun onListItemClick(
@@ -33,18 +32,7 @@ class SearchFragmentNavigationAdapter(
         i: Int
     ): NavigationAdapterViewHolder {
 
-        val inflater = LayoutInflater.from(parent.context)
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.search_fragment_adapter,
-            parent,
-            false
-        )
-
-        return NavigationAdapterViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.search_fragment_adapter, parent, false)
-        )
+        return Companion.from(this, parent)
     }
 
     override fun onBindViewHolder(
@@ -63,11 +51,12 @@ class SearchFragmentNavigationAdapter(
         }
     }
 
-    inner class NavigationAdapterViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class NavigationAdapterViewHolder( binding: SearchFragmentAdapterBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         val textViewHolder: TextView
         val imageViewHolder: ImageView
+
         override fun onClick(view: View) {
             val clickedPosition = adapterPosition
             mSearchClickItemListener.onListItemClick(
@@ -79,8 +68,8 @@ class SearchFragmentNavigationAdapter(
 
         init {
 
-            textViewHolder = itemView.findViewById(R.id.textViewFragmentAdapter)
-            imageViewHolder = itemView.findViewById(R.id.imageFragmentAdapter)
+            textViewHolder = binding.textViewFragmentAdapter
+            imageViewHolder = binding.imageFragmentAdapter
             itemView.setOnClickListener(this)
         }
 
@@ -96,5 +85,34 @@ class SearchFragmentNavigationAdapter(
         hitsList = list
         /*notifyDataSetChanged();*/
     }
+
+    companion object {
+        private fun from(searchFragmentNavigationAdapter: SearchFragmentNavigationAdapter, parent: ViewGroup): NavigationAdapterViewHolder {
+            val inflater = LayoutInflater.from(parent.context)
+            val binding = SearchFragmentAdapterBinding.inflate(inflater)
+
+            /*return NavigationAdapterViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.search_fragment_adapter, parent, false)
+            )*/
+            return searchFragmentNavigationAdapter.NavigationAdapterViewHolder(binding)
+        }
+    }
+
+}
+
+class HitListDiffCallBack : DiffUtil.ItemCallback<ArrayList<String>?>(){
+
+    override fun areItemsTheSame(oldItem: ArrayList<String>, newItem: ArrayList<String>): Boolean {
+        return oldItem.equals(newItem)
+    }
+
+    override fun areContentsTheSame(
+        oldItem: ArrayList<String>,
+        newItem: ArrayList<String>
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
+
 
 }

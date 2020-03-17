@@ -37,7 +37,7 @@ class SearchFragmentNavigation : Fragment(),
     private lateinit var mRecyclerViewSearchFragment: SoloupisEmptyRecyclerView
     private lateinit var imageViewSearchFragment: ImageView
     private lateinit var progressBarSearchFragment: ProgressBar
-    private var hitaList: ArrayList<String> = arrayListOf("George")
+    private var hitaList: ArrayList<String> = arrayListOf("George", "Mary")
     private lateinit var mSearchFragmentNavigationAdapter: SearchFragmentNavigationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {

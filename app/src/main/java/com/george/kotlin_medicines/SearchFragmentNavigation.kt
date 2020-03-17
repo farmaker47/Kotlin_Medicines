@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.JsonReader
 import android.util.JsonToken
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -30,7 +31,6 @@ import java.io.StringReader
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -50,7 +50,7 @@ class SearchFragmentNavigation : Fragment(),
 
     private var hitaList: ArrayList<String> = ArrayList()
     private lateinit var mSearchFragmentNavigationAdapter: SearchFragmentNavigationAdapter
-    val timer: Timer = Timer()
+    private lateinit var timer: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +83,9 @@ class SearchFragmentNavigation : Fragment(),
             Toast.makeText(activity, R.string.please_connect_to_internet, Toast.LENGTH_SHORT).show()
         }
 
+        //Initialize timer
+        timer = Timer()
+
         //setting the empty view, only with custom Recycler view
         binding.recyclerViewSearchFragment.setEmptyView(binding.imageSearchFragment)
         binding.recyclerViewSearchFragment.setHasFixedSize(true)
@@ -100,8 +103,7 @@ class SearchFragmentNavigation : Fragment(),
                 i: Int,
                 i1: Int,
                 i2: Int
-            ) {
-            }
+            ) {}
 
             override fun onTextChanged(
                 charSequence: CharSequence,
@@ -109,43 +111,35 @@ class SearchFragmentNavigation : Fragment(),
                 i1: Int,
                 i2: Int
             ) {
-
                 // user is typing: reset already started timer (if existing)
-                if (timer != null) {
-/*
-                    timer.cancel()
-*/
-                }
+                timer.cancel()
             }
 
             override fun afterTextChanged(editable: Editable) {
                 if (binding.autoSearchNavigation.length() >= 4 && networkInfo != null && networkInfo.isConnected) {
+                    timer = Timer()
                     timer.schedule(object : TimerTask() {
                         override fun run() {
 
                             //we determine if it is on creation or after rotation
                             if (savedInstanceState == null) {
-
-                                //actions in specific row
                                 activity!!.runOnUiThread {
                                     hideKeyboard()
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
                                     binding.progressSearchFragment.visibility = View.VISIBLE
                                 }
-                            } /*else if (savedInstanceState != null) {
+                            } else {
                                 activity!!.runOnUiThread {
                                     hideKeyboard()
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
-                                    progressBarSearchFragment.visibility = View.VISIBLE
+                                    binding.progressSearchFragment.visibility = View.VISIBLE
                                 }
-                            }*/
+                            }
                         }
-                    }, 900)
+                    }, 1000)
                 }
             }
         })
-
-        //clicking X button at right inside autocomplete
 
         //clicking X button at right inside autocomplete
         binding.autoSearchNavigation.setOnTouchListener(OnTouchListener { view, motionEvent ->
@@ -164,8 +158,7 @@ class SearchFragmentNavigation : Fragment(),
                     clearDataOfList()
                     showKeyboard()
                     return@OnTouchListener true
-                } else if (motionEvent.rawX < binding.autoSearchNavigation.compoundDrawables[DRAWABLE_LEFT].bounds.width() - binding.autoSearchNavigation.left
-                ) {
+                } else if (motionEvent.rawX < binding.autoSearchNavigation.compoundDrawables[DRAWABLE_LEFT].bounds.width() - binding.autoSearchNavigation.left) {
 
                     //TODO
                     /*IntentIntegrator integrator = new IntentIntegrator(getActivity());
@@ -219,6 +212,7 @@ class SearchFragmentNavigation : Fragment(),
 
     private fun clearDataOfList() {
         mSearchFragmentNavigationAdapter.setHitsData(ArrayList())
+        Objects.requireNonNull(binding.recyclerViewSearchFragment.adapter)?.notifyDataSetChanged()
     }
 
     override fun onListItemClick(itemIndex: Int, sharedImage: ImageView?, type: String?) {
@@ -291,9 +285,10 @@ class SearchFragmentNavigation : Fragment(),
                     var parsedText: String = builder.toString()
                 }
                 mSearchFragmentNavigationAdapter.setHitsData(arrayForTextView)
+                Objects.requireNonNull(binding.recyclerViewSearchFragment.adapter)?.notifyDataSetChanged()
                 //we reset position to 0
-                binding.recyclerViewSearchFragment.smoothScrollToPosition(0)
-                binding.recyclerViewSearchFragment.layoutManager?.scrollToPosition(0)
+                /*binding.recyclerViewSearchFragment.smoothScrollToPosition(0)
+                binding.recyclerViewSearchFragment.layoutManager?.scrollToPosition(0)*/
 
                 //running the animation at the beggining of showing the list
                 runLayoutAnimation(binding.recyclerViewSearchFragment)
@@ -317,7 +312,9 @@ class SearchFragmentNavigation : Fragment(),
                 R.anim.layout_animation_fall_down
             )
         recyclerView.layoutAnimation = controller
+/*
         Objects.requireNonNull(recyclerView.adapter)?.notifyDataSetChanged()
+*/
         recyclerView.scheduleLayoutAnimation()
     }
 

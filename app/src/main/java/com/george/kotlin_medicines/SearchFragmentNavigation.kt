@@ -21,9 +21,13 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.george.kotlin_medicines.databinding.FragmentSearchFragmentNavigationBinding
+import com.george.view_models.SearchFragmentNavigationViewModel
+import kotlinx.android.synthetic.main.fragment_search_fragment_navigation.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.IOException
@@ -48,9 +52,13 @@ class SearchFragmentNavigation : Fragment(),
     private lateinit var binding: FragmentSearchFragmentNavigationBinding
     val URL_TO_SERVE = "https://services.eof.gr/drugsearch/SearchName.iface"
 
-    private var hitaList: ArrayList<String> = ArrayList()
+    /*
+        private var hitaList: ArrayList<String> = ArrayList()
+    */
     private lateinit var mSearchFragmentNavigationAdapter: SearchFragmentNavigationAdapter
     private lateinit var timer: Timer
+
+    private lateinit var viewModel: SearchFragmentNavigationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +80,10 @@ class SearchFragmentNavigation : Fragment(),
             false
         )
 
+        //Get the viewmodel
+        viewModel = ViewModelProvider(this).get(SearchFragmentNavigationViewModel::class.java)
+        //viewModel.setStringOfEditText(binding.autoSearchNavigation.text.toString().trim())
+
         //Upon creation we check if there is internet connection
         val connMgr =
             activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -86,13 +98,15 @@ class SearchFragmentNavigation : Fragment(),
         //Initialize timer
         timer = Timer()
 
+        Log.e("SAME", "VALUE")
+
         //setting the empty view, only with custom Recycler view
         binding.recyclerViewSearchFragment.setEmptyView(binding.imageSearchFragment)
         binding.recyclerViewSearchFragment.setHasFixedSize(true)
         binding.recyclerViewSearchFragment.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         mSearchFragmentNavigationAdapter =
-            SearchFragmentNavigationAdapter(activity!!, hitaList, this)
+            SearchFragmentNavigationAdapter(activity!!, viewModel.currentList, this)
         binding.recyclerViewSearchFragment.adapter = mSearchFragmentNavigationAdapter
 
 
@@ -103,7 +117,8 @@ class SearchFragmentNavigation : Fragment(),
                 i: Int,
                 i1: Int,
                 i2: Int
-            ) {}
+            ) {
+            }
 
             override fun onTextChanged(
                 charSequence: CharSequence,
@@ -117,6 +132,10 @@ class SearchFragmentNavigation : Fragment(),
 
             override fun afterTextChanged(editable: Editable) {
                 if (binding.autoSearchNavigation.length() >= 4 && networkInfo != null && networkInfo.isConnected) {
+                    //set string of edittext in viewmodel
+                    viewModel.setStringOfEditText(
+                        binding.autoSearchNavigation.text.toString().trim()
+                    )
                     timer = Timer()
                     timer.schedule(object : TimerTask() {
                         override fun run() {
@@ -128,7 +147,19 @@ class SearchFragmentNavigation : Fragment(),
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
                                     binding.progressSearchFragment.visibility = View.VISIBLE
                                 }
-                            } else {
+                            } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
+                                    .trim() == viewModel.stringOfEditText
+                            ) {
+                                activity!!.runOnUiThread {
+                                    /*hideKeyboard()
+                                    fetchInfo(binding.autoSearchNavigation.text.toString().trim())
+                                    binding.progressSearchFragment.visibility = View.VISIBLE*/
+
+                                    Log.i("SAME_EDIT", viewModel.stringOfEditText)
+                                }
+                            } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
+                                    .trim() != viewModel.stringOfEditText
+                            ) {
                                 activity!!.runOnUiThread {
                                     hideKeyboard()
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
@@ -220,7 +251,6 @@ class SearchFragmentNavigation : Fragment(),
     }
 
     private fun fetchInfo(queryString: String) {
-
         //Put value
         binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:txtDrname').value='$queryString';})()")
         val connMgr =
@@ -228,11 +258,10 @@ class SearchFragmentNavigation : Fragment(),
         val networkInfo = connMgr.activeNetworkInfo
         // If there is a network connection, fetch info
         if (networkInfo != null && networkInfo.isConnected) {
-
             //Click button
             binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:btnSubmit');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()")
 
-            //Wait 2 seconds
+            //Wait 2 seconds for webview to load
             val handler = Handler()
             handler.postDelayed({
                 binding.webViewEof.evaluateJavascript(
@@ -240,8 +269,7 @@ class SearchFragmentNavigation : Fragment(),
                     ValueCallback<String?> { html ->
                         //Make progressBar disappear
                         binding.progressSearchFragment.visibility = View.INVISIBLE
-                        val reader =
-                            JsonReader(StringReader(html))
+                        val reader = JsonReader(StringReader(html))
                         reader.isLenient = true
                         try {
                             if (reader.peek() == JsonToken.STRING) {
@@ -261,8 +289,7 @@ class SearchFragmentNavigation : Fragment(),
     @Throws(IOException::class)
     private fun parseSecondColumn(html: String) {
         val builder = StringBuilder()
-        val arrayForTextView =
-            ArrayList<String>()
+        val arrayForTextView = ArrayList<String>()
         val doc = Jsoup.parse(html)
         if (checkElement(
                 doc.select("table[id=form1:tblResults]").first()
@@ -284,8 +311,13 @@ class SearchFragmentNavigation : Fragment(),
                     builder.append(arrayForTextView[i]).append("\n")
                     var parsedText: String = builder.toString()
                 }
-                mSearchFragmentNavigationAdapter.setHitsData(arrayForTextView)
-                Objects.requireNonNull(binding.recyclerViewSearchFragment.adapter)?.notifyDataSetChanged()
+
+                //Set value to viewMOdel
+                viewModel.setList(arrayForTextView)
+                //Show results
+                mSearchFragmentNavigationAdapter.setHitsData(viewModel.currentList)
+                Objects.requireNonNull(binding.recyclerViewSearchFragment.adapter)
+                    ?.notifyDataSetChanged()
                 //we reset position to 0
                 /*binding.recyclerViewSearchFragment.smoothScrollToPosition(0)
                 binding.recyclerViewSearchFragment.layoutManager?.scrollToPosition(0)*/

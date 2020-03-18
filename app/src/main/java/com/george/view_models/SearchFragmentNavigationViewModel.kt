@@ -24,7 +24,6 @@ class SearchFragmentNavigationViewModel : ViewModel() {
 
     fun setStringOfEditText(string: String) {
         _stringOfEditText = string
-        Log.e("SAME_ViewModel", _stringOfEditText)
     }
 
 }

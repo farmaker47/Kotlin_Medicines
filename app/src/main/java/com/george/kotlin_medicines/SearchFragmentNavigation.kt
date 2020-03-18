@@ -132,10 +132,7 @@ class SearchFragmentNavigation : Fragment(),
 
             override fun afterTextChanged(editable: Editable) {
                 if (binding.autoSearchNavigation.length() >= 4 && networkInfo != null && networkInfo.isConnected) {
-                    //set string of edittext in viewmodel
-                    viewModel.setStringOfEditText(
-                        binding.autoSearchNavigation.text.toString().trim()
-                    )
+
                     timer = Timer()
                     timer.schedule(object : TimerTask() {
                         override fun run() {
@@ -146,6 +143,10 @@ class SearchFragmentNavigation : Fragment(),
                                     hideKeyboard()
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
                                     binding.progressSearchFragment.visibility = View.VISIBLE
+                                    //set string of edittext in viewmodel
+                                    viewModel.setStringOfEditText(
+                                        binding.autoSearchNavigation.text.toString().trim()
+                                    )
                                 }
                             } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
                                     .trim() == viewModel.stringOfEditText
@@ -155,15 +156,21 @@ class SearchFragmentNavigation : Fragment(),
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
                                     binding.progressSearchFragment.visibility = View.VISIBLE*/
 
-                                    Log.i("SAME_EDIT", viewModel.stringOfEditText)
+                                    Log.e("SAME_EDIT_EQUALS", viewModel.stringOfEditText)
                                 }
                             } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
                                     .trim() != viewModel.stringOfEditText
                             ) {
+
+                                Log.e("SAME_EDIT_NOT_EQUALS", viewModel.stringOfEditText)
                                 activity!!.runOnUiThread {
                                     hideKeyboard()
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
                                     binding.progressSearchFragment.visibility = View.VISIBLE
+                                    //set string of edittext in viewmodel
+                                    viewModel.setStringOfEditText(
+                                        binding.autoSearchNavigation.text.toString().trim()
+                                    )
                                 }
                             }
                         }

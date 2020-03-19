@@ -98,8 +98,6 @@ class SearchFragmentNavigation : Fragment(),
         //Initialize timer
         timer = Timer()
 
-        Log.e("SAME", "VALUE")
-
         //setting the empty view, only with custom Recycler view
         binding.recyclerViewSearchFragment.setEmptyView(binding.imageSearchFragment)
         binding.recyclerViewSearchFragment.setHasFixedSize(true)
@@ -152,17 +150,12 @@ class SearchFragmentNavigation : Fragment(),
                                     .trim() == viewModel.stringOfEditText
                             ) {
                                 activity!!.runOnUiThread {
-                                    /*hideKeyboard()
-                                    fetchInfo(binding.autoSearchNavigation.text.toString().trim())
-                                    binding.progressSearchFragment.visibility = View.VISIBLE*/
-
-                                    Log.e("SAME_EDIT_EQUALS", viewModel.stringOfEditText)
+                                    Log.i("SAME_EDIT_EQUALS", viewModel.stringOfEditText)
                                 }
                             } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
                                     .trim() != viewModel.stringOfEditText
                             ) {
-
-                                Log.e("SAME_EDIT_NOT_EQUALS", viewModel.stringOfEditText)
+                                Log.i("SAME_EDIT_NOT_EQUALS", viewModel.stringOfEditText)
                                 activity!!.runOnUiThread {
                                     hideKeyboard()
                                     fetchInfo(binding.autoSearchNavigation.text.toString().trim())
@@ -254,7 +247,7 @@ class SearchFragmentNavigation : Fragment(),
     }
 
     override fun onListItemClick(itemIndex: Int, sharedImage: ImageView?, type: String?) {
-        TODO("Not yet implemented")
+        Log.e("Clicked", type)
     }
 
     private fun fetchInfo(queryString: String) {

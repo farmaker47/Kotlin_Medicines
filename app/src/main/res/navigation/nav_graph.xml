@@ -7,5 +7,17 @@
     <fragment
         android:id="@+id/searchFragmentNavigation"
         android:name="com.george.kotlin_medicines.SearchFragmentNavigation"
-        android:label="SearchFragmentNavigation" />
+        android:label="SearchFragmentNavigation" >
+        <action
+            android:id="@+id/action_searchFragmentNavigation_to_packageFragment"
+            app:destination="@id/packageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/packageFragment"
+        android:name="com.george.kotlin_medicines.PackageFragment"
+        android:label="PackageFragment" >
+        <action
+            android:id="@+id/action_packageFragment_to_searchFragmentNavigation"
+            app:destination="@id/searchFragmentNavigation" />
+    </fragment>
 </navigation>

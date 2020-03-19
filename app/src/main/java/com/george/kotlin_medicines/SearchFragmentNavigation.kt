@@ -2,6 +2,7 @@ package com.george.kotlin_medicines
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -19,15 +20,15 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.ValueCallback
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.george.kotlin_medicines.databinding.FragmentSearchFragmentNavigationBinding
 import com.george.view_models.SearchFragmentNavigationViewModel
-import kotlinx.android.synthetic.main.fragment_search_fragment_navigation.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.IOException
@@ -38,6 +39,7 @@ import kotlin.collections.ArrayList
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val NAME_OF_MEDICINES = "name_of_medicines"
 
 /**
  * A simple [Fragment] subclass.
@@ -248,6 +250,43 @@ class SearchFragmentNavigation : Fragment(),
 
     override fun onListItemClick(itemIndex: Int, sharedImage: ImageView?, type: String?) {
         Log.e("Clicked", type)
+        //click specific item position
+        binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:tblResults:$itemIndex:lnkDRNAME');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()")
+
+        //navigate to second fragment
+        //findNavController().navigate(R.id.action_searchFragmentNavigation_to_packageFragment)
+
+        //making animation above api
+
+
+        //making animation above api
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // bundle for the transition effect
+            Log.e("transition", sharedImage!!.transitionName)
+            // bundle for the transition effect
+            val bundle = Bundle()
+            bundle.putString(NAME_OF_MEDICINES, type)
+            /*val bundle: Bundle = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(
+                    ,
+                    sharedImage,
+                    sharedImage!!.transitionName
+                ).toBundle()*/
+            findNavController().navigate(
+                R.id.action_searchFragmentNavigation_to_packageFragment,
+                bundle
+            )
+        } else {
+
+            val bundleLollipop = Bundle()
+            bundleLollipop.putString(NAME_OF_MEDICINES, type)
+            findNavController().navigate(
+                R.id.action_searchFragmentNavigation_to_packageFragment,
+                bundleLollipop
+            )
+
+        }
+
     }
 
     private fun fetchInfo(queryString: String) {

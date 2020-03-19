@@ -26,4 +26,6 @@ class SearchFragmentNavigationViewModel : ViewModel() {
         _stringOfEditText = string
     }
 
+
+
 }

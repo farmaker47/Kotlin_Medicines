@@ -81,13 +81,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="#dfdfdf"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#d9d5d5"
+                android:background="#dfdfdf"
                 android:orientation="horizontal">
 
                 <ImageView

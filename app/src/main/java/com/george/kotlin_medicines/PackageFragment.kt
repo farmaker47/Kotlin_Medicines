@@ -381,11 +381,11 @@ class PackageFragment : Fragment() {
                     if (perilipsi.text().endsWith(".pdf") || perilipsi.text()
                             .endsWith(".doc") || perilipsi.text().endsWith(".docx")
                     ) {
-                        /*setNameOfPdf(perilipsi.text())
-                        beginDownload(
+                        (Objects.requireNonNull(activity) as KotlinMainActivity).setNameOfPdf(perilipsi.text())
+                        (Objects.requireNonNull(activity) as KotlinMainActivity).beginDownload(
                             URL_FOR_PDFs + perilipsiPdf.attr("href"),
                             cookieStringStripped, perilipsi.text()
-                        )*/
+                        )
                         binding.progressBarPackage.setVisibility(View.VISIBLE)
                     } /*else if (perilipsi.text().equals("Προβολή (H.M.A.)") || perilipsi.text().equals("Προβολή (E.M.A.)")) {
 
@@ -444,13 +444,13 @@ class PackageFragment : Fragment() {
                     if (filoOdigion.text().endsWith(".pdf") || filoOdigion.text()
                             .endsWith(".doc") || filoOdigion.text().endsWith(".docx")
                     ) {
-                        /*setNameOfPdf(
+                        (Objects.requireNonNull(activity) as KotlinMainActivity).setNameOfPdf(
                             filoOdigion.text()
                         )
-                        beginDownload(
-                            PackageFragment.URL_FOR_PDFs + filoOdigionPdf.attr("href"),
+                        (Objects.requireNonNull(activity) as KotlinMainActivity).beginDownload(
+                            URL_FOR_PDFs + filoOdigionPdf.attr("href"),
                             cookieStringStripped, filoOdigion.text()
-                        )*/
+                        )
                         binding.progressBarPackage.setVisibility(View.VISIBLE)
                     } /*else if (filoOdigion.text().equals("Προβολή (H.M.A.)") || filoOdigion.text().equals("Προβολή (E.M.A.)")) {
 
@@ -495,13 +495,13 @@ class PackageFragment : Fragment() {
                             .endsWith(".pdf") || ekthesiAksiologisis.text()
                             .endsWith(".doc") || ekthesiAksiologisis.text().endsWith(".docx")
                     ) {
-                        /*setNameOfPdf(
+                        (Objects.requireNonNull(activity) as KotlinMainActivity).setNameOfPdf(
                             ekthesiAksiologisis.text()
                         )
-                        beginDownload(
+                        (Objects.requireNonNull(activity) as KotlinMainActivity).beginDownload(
                             URL_FOR_PDFs + ekthesiAksiologisis.attr("href"),
                             cookieStringStripped, ekthesiAksiologisis.text()
-                        )*/
+                        )
                         binding.webViewPackage.setVisibility(View.VISIBLE)
                     } else if (ekthesiAksiologisis.text() == "Προβολή (H.M.A.)" || ekthesiAksiologisis.text() == "Προβολή (E.M.A.)") {
                         val findString = ekthesiAksiologisis.attr("onclick")

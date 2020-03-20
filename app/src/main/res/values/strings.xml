@@ -38,4 +38,5 @@
     <string name="no_internet">No internet connection!</string>
     <string name="no_results">Try again.. no results found!</string>
     <string name="eof_error">Eof server is down..try again later</string>
+    <string name="wait_String" translatable="false">Wait...</string>
 </resources>

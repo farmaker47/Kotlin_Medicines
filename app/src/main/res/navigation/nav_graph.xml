@@ -10,7 +10,9 @@
         android:label="SearchFragmentNavigation" >
         <action
             android:id="@+id/action_searchFragmentNavigation_to_packageFragment"
-            app:destination="@id/packageFragment" />
+            app:destination="@id/packageFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/packageFragment"

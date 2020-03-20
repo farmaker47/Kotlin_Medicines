@@ -18,9 +18,10 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.webkit.ValueCallback
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.george.kotlin_medicines.databinding.FragmentSearchFragmentNavigationBinding
 import com.george.view_models.SearchFragmentNavigationViewModel
+import kotlinx.android.synthetic.main.activity_scrolling_details_fragment.view.*
+import kotlinx.android.synthetic.main.fragment_search_fragment_navigation.view.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.IOException
@@ -40,6 +43,7 @@ import kotlin.collections.ArrayList
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val NAME_OF_MEDICINES = "name_of_medicines"
+private const val URL_TO_SERVE = "https://services.eof.gr/drugsearch/SearchName.iface"
 
 /**
  * A simple [Fragment] subclass.
@@ -52,7 +56,6 @@ class SearchFragmentNavigation : Fragment(),
     private var param2: String? = null
 
     private lateinit var binding: FragmentSearchFragmentNavigationBinding
-    val URL_TO_SERVE = "https://services.eof.gr/drugsearch/SearchName.iface"
 
     /*
         private var hitaList: ArrayList<String> = ArrayList()
@@ -210,6 +213,25 @@ class SearchFragmentNavigation : Fragment(),
 
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //make edittext with no letters inside to avoid loading again
+        binding.autoSearchNavigation.setText("")
+
+        binding.webViewEof.setWebViewClient(object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(view, url)
+                val handler = Handler()
+                handler.postDelayed(
+                    { binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:btnBack');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()") },
+                    500
+                )
+            }
+        })
+
+        binding.webViewEof.loadUrl(URL_TO_SERVE)
     }
 
     companion object {

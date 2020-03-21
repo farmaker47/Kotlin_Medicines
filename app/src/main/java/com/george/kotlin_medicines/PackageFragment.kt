@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.george.kotlin_medicines.databinding.ActivityScrollingDetailsFragmentBinding
 import com.squareup.picasso.Picasso
 import org.jsoup.Jsoup
@@ -33,7 +34,6 @@ import java.io.IOException
 import java.io.StringReader
 import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -253,6 +253,19 @@ class PackageFragment : Fragment() {
                                 arrayForTextView[i],
                                 arrayForTextView[i]
                             )*/
+
+                            val bundle = Bundle()
+                            bundle.putString(NAME_OF_MEDICINES, arrayForTextView[i])
+                            /*val bundle: Bundle = ActivityOptionsCompat
+                                .makeSceneTransitionAnimation(
+                                    ,
+                                    sharedImage,
+                                    sharedImage!!.transitionName
+                                ).toBundle()*/
+                            findNavController().navigate(
+                                R.id.action_packageFragment_to_ingredientFragment,
+                                bundle
+                            )
                         }
                     linearLayout.addView(ingredient)
                     linearLayout.addView(ingredient2)

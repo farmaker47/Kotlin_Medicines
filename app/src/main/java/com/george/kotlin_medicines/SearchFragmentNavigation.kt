@@ -284,7 +284,7 @@ class SearchFragmentNavigation : Fragment(),
         //making animation above api
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // bundle for the transition effect
-            Log.e("transition", sharedImage!!.transitionName)
+            Log.v("transition", sharedImage!!.transitionName)
             // bundle for the transition effect
             val bundle = Bundle()
             bundle.putString(NAME_OF_MEDICINES, type)

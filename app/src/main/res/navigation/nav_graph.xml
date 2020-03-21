@@ -12,7 +12,9 @@
             android:id="@+id/action_searchFragmentNavigation_to_packageFragment"
             app:destination="@id/packageFragment"
             app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit" />
     </fragment>
     <fragment
         android:id="@+id/packageFragment"
@@ -21,5 +23,17 @@
         <action
             android:id="@+id/action_packageFragment_to_searchFragmentNavigation"
             app:destination="@id/searchFragmentNavigation" />
+        <action
+            android:id="@+id/action_packageFragment_to_ingredientFragment"
+            app:destination="@id/ingredientFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ingredientFragment"
+        android:name="com.george.kotlin_medicines.IngredientFragment"
+        android:label="fragment_ingredient"
+        tools:layout="@layout/fragment_ingredient" >
+        <action
+            android:id="@+id/action_ingredientFragment_to_packageFragment"
+            app:destination="@id/packageFragment" />
     </fragment>
 </navigation>

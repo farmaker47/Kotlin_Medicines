@@ -39,4 +39,7 @@
     <string name="no_results">Try again.. no results found!</string>
     <string name="eof_error">Eof server is down..try again later</string>
     <string name="wait_String" translatable="false">Wait...</string>
+    <string name="drastikiNoResults">No results found.</string>
+    <string name="try_again">Try again. Server error!</string>
+    <string name="noresultTryBelow">No result. Please try one from below.</string>
 </resources>

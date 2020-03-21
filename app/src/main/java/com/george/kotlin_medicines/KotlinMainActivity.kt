@@ -57,26 +57,6 @@ class KotlinMainActivity : AppCompatActivity() {
     }
 
     //Check permissions
-    /*private fun hasPermissions(
-        context: Context?,
-        vararg permissions: Array<String>?
-    ): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null) {
-            for (permission in permissions) {
-                if (ActivityCompat.checkSelfPermission(
-                        context,
-                        permission.toString()
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    Log.e("Permissions = ", "false$permission")
-                    return false
-                }
-            }
-        }
-        return true
-    }*/
-
-    //Check permissions
     private fun hasPermissions(
         context: Context?,
         vararg permissions: String

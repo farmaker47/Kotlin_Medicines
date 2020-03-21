@@ -25,8 +25,10 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.george.kotlin_medicines.databinding.ActivityScrollingDetailsFragmentBinding
+import com.george.view_models.PackageFragmentViewModel
 import com.squareup.picasso.Picasso
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -57,6 +59,7 @@ class PackageFragment : Fragment() {
     private var param2: String? = null
     private lateinit var binding: ActivityScrollingDetailsFragmentBinding
     private var cookieStringStripped: String? = null
+    private lateinit var packageViewModel: PackageFragmentViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +81,7 @@ class PackageFragment : Fragment() {
         )
         //Request permissions to read and write
         ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 112)
+        packageViewModel = ViewModelProvider(this).get(PackageFragmentViewModel::class.java)
 
         //set text
         binding.titleTextViewGray.text = medicine_name
@@ -86,28 +90,35 @@ class PackageFragment : Fragment() {
             Picasso.get().load(R.drawable.recipe_icon).into(binding.detailActivityImage)
         }
 
-        //load url and fetch info
-        binding.webViewPackage.webViewClient = object : WebViewClient() {
+        //load url and fetch info if savedInstanceState is null
+        if (savedInstanceState == null) {
+            binding.webViewPackage.webViewClient = object : WebViewClient() {
 
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                binding.progressBarPackage.visibility = View.VISIBLE
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    binding.progressBarPackage.visibility = View.VISIBLE
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    binding.progressBarPackage.visibility = View.GONE
+                    fetchAllInfo()
+                    cookieStringStripped = CookieManager.getInstance().getCookie(url)
+                    packageViewModel.setStringCookies(cookieStringStripped!!)
+                    Log.i("COOKIES", cookieStringStripped)
+                }
             }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                binding.progressBarPackage.visibility = View.GONE
-                fetchAllInfo()
-                cookieStringStripped = CookieManager.getInstance().getCookie(url)
-                Log.e("COOKIES", cookieStringStripped)
-            }
+            //Enable Javascript
+            binding.webViewPackage.settings.javaScriptEnabled = true
+            //Clear All and load url
+            //Clear All and load url
+            binding.webViewPackage.loadUrl(URL_TO_SERVE)
+        }else{
+            parseAllInfo(packageViewModel.stringOfHtml)
+            cookieStringStripped = packageViewModel.stringCookies
         }
 
-        //Enable Javascript
-        binding.webViewPackage.settings.javaScriptEnabled = true
-        //Clear All and load url
-        //Clear All and load url
-        binding.webViewPackage.loadUrl(URL_TO_SERVE)
 
         return binding.root
     }
@@ -128,6 +139,7 @@ class PackageFragment : Fragment() {
                     if (reader.peek() == JsonToken.STRING) {
                         val domStr = reader.nextString()
                         domStr?.let { parseAllInfo(it) }
+                        packageViewModel.setStringOfHtml(domStr)
                     }
                 } catch (e: IOException) {
                     // handle exception

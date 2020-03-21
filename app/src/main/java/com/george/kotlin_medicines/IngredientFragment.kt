@@ -88,25 +88,26 @@ class IngredientFragment : Fragment() {
         ingredientProgressBar = binding.progressIngredient
 
 
-        pingAndGet(DRUGS_CA)
+        DRUGS_CA.pingAndGet()
 
         Log.v("NAME", "$ingredient_name")
         return binding.root
     }
 
     //Fetch structure and description
-    private fun pingAndGet(url: String) {
+    private fun String.pingAndGet() {
         arrayForChoiceText = ArrayList<String>()
         arrayForChoiceUrl = ArrayList()
         builderImage = java.lang.StringBuilder()
         builderInfo = java.lang.StringBuilder()
         textDrastiki!!.text = ""
         textViewResults!!.text = ""
+        
         Thread(Runnable {
             val cookies =
                 HashMap<String, String>()
             try {
-                if (url == "https://www.drugbank.ca/drugs") {
+                if (this == "https://www.drugbank.ca/drugs") {
                     val loginFormResponse =
                         Jsoup.connect(DRUGS_CA)
                             .method(Connection.Method.GET)
@@ -206,7 +207,7 @@ class IngredientFragment : Fragment() {
                     }
                 } else {
                     val loginFormResponseTrial =
-                        Jsoup.connect(url)
+                        Jsoup.connect(this)
                             .method(Connection.Method.GET)
                             .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
                             .execute()
@@ -215,7 +216,10 @@ class IngredientFragment : Fragment() {
                     builderImage!!.append("https://www.drugbank.ca")
                     val doc = loginFormResponseTrial.parse()
                     //check if table exists
-                    if (checkElement(doc.select("a[class=moldbi-vector-thumbnail]").first())) {
+                    if (checkElement(
+                            doc.select("a[class=moldbi-vector-thumbnail]").first()
+                        )
+                    ) {
                         val imageUrl =
                             doc.select("a[class=moldbi-vector-thumbnail]")
                         for (element in imageUrl) {
@@ -280,28 +284,37 @@ class IngredientFragment : Fragment() {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            activity!!.runOnUiThread(Runnable {
+
+            activity!!.runOnUiThread {
                 if (builderImage.toString() != "https://www.drugbank.ca") {
                     ingredientProgressBar!!.visibility = View.INVISIBLE
                     SvgLoader.pluck()
                         .with(activity)
                         .setPlaceHolder(R.drawable.recipe_icon, R.drawable.recipe_icon)
-                        .load(builderImage.toString(), imageMeds)
-                    textViewResults!!.text = parsedInfo
-                    textDrastiki!!.text = ingredientName
+                        .load(
+                            builderImage.toString(),
+                            imageMeds
+                        )
+                    textViewResults!!.text =
+                        parsedInfo
+                    textDrastiki!!.text =
+                        ingredientName
                     linearDrastiki!!.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && isPresent) {
                     ingredientProgressBar!!.visibility = View.INVISIBLE
                     Picasso.get().load(R.drawable.recipe_icon).into(imageMeds)
-                    textViewResults!!.text = getString(R.string.drastikiNoResults)
+                    textViewResults!!.text =
+                        getString(R.string.drastikiNoResults)
                     Log.i("LATHOS1", builderImage.toString())
                     linearDrastiki!!.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && !isPresent) {
                     ingredientProgressBar!!.visibility = View.INVISIBLE
                     Picasso.get().load(R.drawable.recipe_icon).into(imageMeds)
-                    textDrastiki!!.text = ingredientName
+                    textDrastiki!!.text =
+                        ingredientName
                     Log.i("LATHOS2", builderImage.toString())
-                    textViewResults!!.text = getString(R.string.noresultTryBelow)
+                    textViewResults!!.text =
+                        getString(R.string.noresultTryBelow)
                     for (i in arrayForChoiceUrl!!.indices) {
                         val name: String = arrayForChoiceText!!.get(i)
                         val urlText = arrayForChoiceUrl!![i]
@@ -324,14 +337,14 @@ class IngredientFragment : Fragment() {
                                 ingredientName = arrayForChoiceText!!.get(i)
                                 ingredientProgressBar!!.visibility = View.VISIBLE
                                 imageMeds!!.setImageDrawable(null)
-                                pingAndGet(DRUGS_CA)
+                                DRUGS_CA.pingAndGet()
                                 linearChoice!!.removeAllViews()
                             }
                         linearChoice!!.addView(ingredient)
                     }
                     linearDrastiki!!.visibility = View.VISIBLE
                 }
-            })
+            }
         }).start()
     }
 

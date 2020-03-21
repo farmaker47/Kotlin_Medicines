@@ -7,15 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.ahmadrosid.svgloader.SvgLoader
 import com.george.kotlin_medicines.databinding.FragmentIngredientBinding
-import com.ms.square.android.expandabletextview.ExpandableTextView
 import com.squareup.picasso.Picasso
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -50,14 +47,8 @@ class IngredientFragment : Fragment() {
     private var parsedText: String? = null
     private var parsedInfo: String? = null
     private var isPresent = true
-    private var textDrastiki: TextView? = null
-    private var linearDrastiki: LinearLayout? = null
-    private var textViewResults: ExpandableTextView? = null
-    private var imageMeds: ImageView? = null
-    private var linearChoice: LinearLayout? = null
     private val TAG = "DrastikiImage"
     private val drastikiGeneral: String? = null
-    private var ingredientProgressBar: ProgressBar? = null
     var isActive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,14 +71,6 @@ class IngredientFragment : Fragment() {
             false
         )
 
-        linearDrastiki = binding.linearDrastiki
-        textDrastiki = binding.textDrastiki
-        textViewResults = binding.expandTextView
-        imageMeds = binding.imageMeds
-        linearChoice = binding.linearChoice
-        ingredientProgressBar = binding.progressIngredient
-
-
         DRUGS_CA.pingAndGet()
 
         Log.v("NAME", "$ingredient_name")
@@ -100,9 +83,9 @@ class IngredientFragment : Fragment() {
         arrayForChoiceUrl = ArrayList()
         builderImage = java.lang.StringBuilder()
         builderInfo = java.lang.StringBuilder()
-        textDrastiki!!.text = ""
-        textViewResults!!.text = ""
-        
+        binding.textDrastiki.text = ""
+        binding.expandTextView.text = ""
+
         Thread(Runnable {
             val cookies =
                 HashMap<String, String>()
@@ -287,33 +270,33 @@ class IngredientFragment : Fragment() {
 
             activity!!.runOnUiThread {
                 if (builderImage.toString() != "https://www.drugbank.ca") {
-                    ingredientProgressBar!!.visibility = View.INVISIBLE
+                    binding.progressIngredient.visibility = View.INVISIBLE
                     SvgLoader.pluck()
                         .with(activity)
                         .setPlaceHolder(R.drawable.recipe_icon, R.drawable.recipe_icon)
                         .load(
                             builderImage.toString(),
-                            imageMeds
+                            binding.imageMeds
                         )
-                    textViewResults!!.text =
+                    binding.expandTextView.text =
                         parsedInfo
-                    textDrastiki!!.text =
+                    binding.textDrastiki.text =
                         ingredientName
-                    linearDrastiki!!.visibility = View.VISIBLE
+                    binding.linearDrastiki.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && isPresent) {
-                    ingredientProgressBar!!.visibility = View.INVISIBLE
-                    Picasso.get().load(R.drawable.recipe_icon).into(imageMeds)
-                    textViewResults!!.text =
+                    binding.progressIngredient.visibility = View.INVISIBLE
+                    Picasso.get().load(R.drawable.recipe_icon).into(binding.imageMeds)
+                    binding.expandTextView.text =
                         getString(R.string.drastikiNoResults)
                     Log.i("LATHOS1", builderImage.toString())
-                    linearDrastiki!!.visibility = View.VISIBLE
+                    binding.linearDrastiki.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && !isPresent) {
-                    ingredientProgressBar!!.visibility = View.INVISIBLE
-                    Picasso.get().load(R.drawable.recipe_icon).into(imageMeds)
-                    textDrastiki!!.text =
+                    binding.progressIngredient.visibility = View.INVISIBLE
+                    Picasso.get().load(R.drawable.recipe_icon).into(binding.imageMeds)
+                    binding.textDrastiki.text =
                         ingredientName
                     Log.i("LATHOS2", builderImage.toString())
-                    textViewResults!!.text =
+                    binding.expandTextView.text =
                         getString(R.string.noresultTryBelow)
                     for (i in arrayForChoiceUrl!!.indices) {
                         val name: String = arrayForChoiceText!!.get(i)
@@ -335,14 +318,14 @@ class IngredientFragment : Fragment() {
                         ingredient
                             .setOnClickListener { /*Toast.makeText(IngredientActivity.this,  urlText, Toast.LENGTH_LONG).show();*/
                                 ingredientName = arrayForChoiceText!!.get(i)
-                                ingredientProgressBar!!.visibility = View.VISIBLE
-                                imageMeds!!.setImageDrawable(null)
+                                binding.progressIngredient.visibility = View.VISIBLE
+                                binding.imageMeds.setImageDrawable(null)
                                 DRUGS_CA.pingAndGet()
-                                linearChoice!!.removeAllViews()
+                                binding.linearChoice.removeAllViews()
                             }
-                        linearChoice!!.addView(ingredient)
+                        binding.linearChoice.addView(ingredient)
                     }
-                    linearDrastiki!!.visibility = View.VISIBLE
+                    binding.linearDrastiki.visibility = View.VISIBLE
                 }
             }
         }).start()

@@ -87,30 +87,34 @@ class PackageFragment : Fragment() {
         }
 
         //load url and fetch info
-
-        binding.webViewPackage.setWebViewClient(object : WebViewClient() {
+        binding.webViewPackage.webViewClient = object : WebViewClient() {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                binding.progressBarPackage.setVisibility(View.VISIBLE)
+                binding.progressBarPackage.visibility = View.VISIBLE
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                binding.progressBarPackage.setVisibility(View.GONE)
+                binding.progressBarPackage.visibility = View.GONE
                 fetchAllInfo()
                 cookieStringStripped = CookieManager.getInstance().getCookie(url)
                 Log.e("COOKIES", cookieStringStripped)
             }
-        })
+        }
 
         //Enable Javascript
-        binding.webViewPackage.getSettings().setJavaScriptEnabled(true)
+        binding.webViewPackage.settings.javaScriptEnabled = true
         //Clear All and load url
         //Clear All and load url
         binding.webViewPackage.loadUrl(URL_TO_SERVE)
 
         return binding.root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.progressBarPackage.visibility = View.GONE
     }
 
     private fun fetchAllInfo() {
@@ -139,49 +143,49 @@ class PackageFragment : Fragment() {
             if (checkElement(doc.select("span[id=form1:txtDRUGID]").first())) {
                 val kodikosEof =
                     doc.select("span[id=form1:txtDRUGID]").first()
-                binding.farmakMorfi.setText(kodikosEof.text())
+                binding.farmakMorfi.text = kodikosEof.text()
             }
 
             //Nomiko kathestos
             if (checkElement(doc.select("span[id=form1:txtLESTATUS]").first())) {
                 val nomikoKAthestos =
                     doc.select("span[id=form1:txtLESTATUS]").first()
-                binding.nomikoKathestos.setText(nomikoKAthestos.text())
+                binding.nomikoKathestos.text = nomikoKAthestos.text()
             }
 
             //Morfi
             if (checkElement(doc.select("span[id=form1:tblDrform:0:txtformcode]").first())) {
                 val morfi =
                     doc.select("span[id=form1:tblDrform:0:txtformcode]").first()
-                binding.morfiEofTextView.setText(morfi.text())
+                binding.morfiEofTextView.text = morfi.text()
             }
 
             //Periektikotita
             if (checkElement(doc.select("span[id=form1:tblDrform:0:txtStrength]").first())) {
                 val periektikotita =
                     doc.select("span[id=form1:tblDrform:0:txtStrength]").first()
-                binding.periektikotita.setText(periektikotita.text())
+                binding.periektikotita.text = periektikotita.text()
             }
 
             //Odos Xorigisis
             if (checkElement(doc.select("span[id=form1:tblDRROUTE:0:txtDrroute]").first())) {
                 val odos =
                     doc.select("span[id=form1:tblDRROUTE:0:txtDrroute]").first()
-                binding.odosXorigisisTextView.setText(odos.text())
+                binding.odosXorigisisTextView.text = odos.text()
             }
 
             //Kodikos ATC
             if (checkElement(doc.select("span[id=form1:tblATC:0:txtATCcode]").first())) {
                 val kodikos_atc =
                     doc.select("span[id=form1:tblATC:0:txtATCcode]").first()
-                binding.kodikosAtcTextView.setText(kodikos_atc.text())
+                binding.kodikosAtcTextView.text = kodikos_atc.text()
             }
 
             //Perigrafi ATC
             if (checkElement(doc.select("span[id=form1:tblATC:0:txtATCDESCR]").first())) {
                 val perigrafi_atc =
                     doc.select("span[id=form1:tblATC:0:txtATCDESCR]").first()
-                binding.perigrafiAtcTextView.setText(perigrafi_atc.text())
+                binding.perigrafiAtcTextView.text = perigrafi_atc.text()
             }
 
             //Sistatika
@@ -265,7 +269,7 @@ class PackageFragment : Fragment() {
                 val onomasia_etairias =
                     doc.select("td[id=form1:panelGrid6-0-1]").select("span[id=form1:txtName]")
                         .first()
-                binding.onomasiaEtairiasTextView.setText(onomasia_etairias.text())
+                binding.onomasiaEtairiasTextView.text = onomasia_etairias.text()
             }
 
             //Address
@@ -277,7 +281,7 @@ class PackageFragment : Fragment() {
                 val address_etairias =
                     doc.select("td[id=form1:panelGrid6-2-1]").select("span[id=form1:txtAddress]")
                         .first()
-                binding.addressEtairiasTextView.setText(address_etairias.text())
+                binding.addressEtairiasTextView.text = address_etairias.text()
             }
 
             //tilefono
@@ -289,7 +293,7 @@ class PackageFragment : Fragment() {
                 val tilefono_etairias =
                     doc.select("td[id=form1:panelGrid6-3-1]").select("span[id=form1:txtPhone]")
                         .first()
-                binding.tilefonoEtairiasTextView.setText(tilefono_etairias.text())
+                binding.tilefonoEtairiasTextView.text = tilefono_etairias.text()
             }
 
             //Fax
@@ -301,7 +305,7 @@ class PackageFragment : Fragment() {
                 val fax_etairias =
                     doc.select("td[id=form1:panelGrid6-4-1]").select("span[id=form1:txtFax]")
                         .first()
-                binding.faxEtairiasTextView.setText(fax_etairias.text())
+                binding.faxEtairiasTextView.text = fax_etairias.text()
             }
 
             //Mail
@@ -313,7 +317,7 @@ class PackageFragment : Fragment() {
                 val mail_etairias =
                     doc.select("td[id=form1:panelGrid6-5-1]").select("span[id=form1:txtEmail]")
                         .first()
-                binding.mailEtairiasTextView.setText(mail_etairias.text())
+                binding.mailEtairiasTextView.text = mail_etairias.text()
             }
 
             //Perilipsi xaraktiristikon
@@ -323,7 +327,7 @@ class PackageFragment : Fragment() {
             ) {
                 val perilipsi =
                     doc.select("div[id=form1:orDrugSPC_cont]").select(".iceOutLnk").first()
-                binding.perilipsiXaraktiristikonTextView.setText(perilipsi.text())
+                binding.perilipsiXaraktiristikonTextView.text = perilipsi.text()
                 val perilipsiPdf =
                     doc.select("div[id=form1:orDrugSPC_cont]").select("a[href]").first()
                 binding.perilipsiXaraktiristikonTextView.setOnClickListener(View.OnClickListener { /*
@@ -381,12 +385,12 @@ class PackageFragment : Fragment() {
                     if (perilipsi.text().endsWith(".pdf") || perilipsi.text()
                             .endsWith(".doc") || perilipsi.text().endsWith(".docx")
                     ) {
-                        (Objects.requireNonNull(activity) as KotlinMainActivity).setNameOfPdf(perilipsi.text())
-                        (Objects.requireNonNull(activity) as KotlinMainActivity).beginDownload(
+                        (activity as KotlinMainActivity).setNameOfPdf(perilipsi.text())
+                        (activity as KotlinMainActivity).beginDownload(
                             URL_FOR_PDFs + perilipsiPdf.attr("href"),
                             cookieStringStripped, perilipsi.text()
                         )
-                        binding.progressBarPackage.setVisibility(View.VISIBLE)
+                        binding.progressBarPackage.visibility = View.VISIBLE
                     } /*else if (perilipsi.text().equals("Προβολή (H.M.A.)") || perilipsi.text().equals("Προβολή (E.M.A.)")) {
 
 
@@ -404,7 +408,7 @@ class PackageFragment : Fragment() {
             ) {
                 val perilipsi =
                     doc.select("td[id=form1:grdSPCLink-0-0]").select(".iceCmdLnk").first()
-                binding.perilipsiXaraktiristikonTextView.setText(perilipsi.text())
+                binding.perilipsiXaraktiristikonTextView.text = perilipsi.text()
 
                 /*final Element perilipsiPdf = doc.select("div[id=form1:orDrugSPC_cont]").select("a[href]").first();*/
 
@@ -432,7 +436,7 @@ class PackageFragment : Fragment() {
             ) {
                 val filoOdigion =
                     doc.select("div[id=form1:orDrugPL_cont]").select(".iceOutLnk").first()
-                binding.filoOdigionTextView.setText(filoOdigion.text())
+                binding.filoOdigionTextView.text = filoOdigion.text()
                 val filoOdigionPdf =
                     doc.select("div[id=form1:orDrugPL_cont]").select("a[href]").first()
                 binding.filoOdigionTextView.setOnClickListener(View.OnClickListener { /*Intent myWebLink = new Intent(Intent.ACTION_VIEW);
@@ -444,14 +448,14 @@ class PackageFragment : Fragment() {
                     if (filoOdigion.text().endsWith(".pdf") || filoOdigion.text()
                             .endsWith(".doc") || filoOdigion.text().endsWith(".docx")
                     ) {
-                        (Objects.requireNonNull(activity) as KotlinMainActivity).setNameOfPdf(
+                        (activity as KotlinMainActivity).setNameOfPdf(
                             filoOdigion.text()
                         )
-                        (Objects.requireNonNull(activity) as KotlinMainActivity).beginDownload(
+                        (activity as KotlinMainActivity).beginDownload(
                             URL_FOR_PDFs + filoOdigionPdf.attr("href"),
                             cookieStringStripped, filoOdigion.text()
                         )
-                        binding.progressBarPackage.setVisibility(View.VISIBLE)
+                        binding.progressBarPackage.visibility = View.VISIBLE
                     } /*else if (filoOdigion.text().equals("Προβολή (H.M.A.)") || filoOdigion.text().equals("Προβολή (E.M.A.)")) {
 
 
@@ -469,7 +473,7 @@ class PackageFragment : Fragment() {
             ) {
                 val filoOdigion =
                     doc.select("td[id=form1:grdPLLink-0-0]").select(".iceCmdLnk").first()
-                binding.filoOdigionTextView.setText(filoOdigion.text())
+                binding.filoOdigionTextView.text = filoOdigion.text()
                 binding.filoOdigionTextView.setOnClickListener(View.OnClickListener {
                     val findString = filoOdigion.attr("onclick")
                     val iend = findString.indexOf(";")
@@ -489,20 +493,20 @@ class PackageFragment : Fragment() {
             if (checkElement(doc.select("td[id=form1:grdPAR-0-1]").select(".iceCmdLnk").first())) {
                 val ekthesiAksiologisis =
                     doc.select("td[id=form1:grdPAR-0-1]").select(".iceCmdLnk").first()
-                binding.ekthesiAksiologisisTextView.setText(ekthesiAksiologisis.text())
+                binding.ekthesiAksiologisisTextView.text = ekthesiAksiologisis.text()
                 binding.ekthesiAksiologisisTextView.setOnClickListener(View.OnClickListener {
                     if (ekthesiAksiologisis.text()
                             .endsWith(".pdf") || ekthesiAksiologisis.text()
                             .endsWith(".doc") || ekthesiAksiologisis.text().endsWith(".docx")
                     ) {
-                        (Objects.requireNonNull(activity) as KotlinMainActivity).setNameOfPdf(
+                        (activity as KotlinMainActivity).setNameOfPdf(
                             ekthesiAksiologisis.text()
                         )
                         (Objects.requireNonNull(activity) as KotlinMainActivity).beginDownload(
                             URL_FOR_PDFs + ekthesiAksiologisis.attr("href"),
                             cookieStringStripped, ekthesiAksiologisis.text()
                         )
-                        binding.webViewPackage.setVisibility(View.VISIBLE)
+                        binding.webViewPackage.visibility = View.VISIBLE
                     } else if (ekthesiAksiologisis.text() == "Προβολή (H.M.A.)" || ekthesiAksiologisis.text() == "Προβολή (E.M.A.)") {
                         val findString = ekthesiAksiologisis.attr("onclick")
                         val iend = findString.indexOf(";")
@@ -536,7 +540,7 @@ class PackageFragment : Fragment() {
     }
 
     fun makeProgressBarInVisible() {
-        binding.progressBarPackage.setVisibility(View.GONE)
+        binding.progressBarPackage.visibility = View.GONE
     }
 
     private fun checkElement(elem: Element?): Boolean {

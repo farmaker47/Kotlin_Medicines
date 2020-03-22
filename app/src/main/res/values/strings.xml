@@ -42,4 +42,7 @@
     <string name="drastikiNoResults">No results found.</string>
     <string name="try_again">Try again. Server error!</string>
     <string name="noresultTryBelow">No result. Please try one from below.</string>
+    <string name="titleIngredient">Active Ingredient</string>
+    <string name="titleDetails">Details</string>
+    <string name="titleSearch">Medicine Search</string>
 </resources>

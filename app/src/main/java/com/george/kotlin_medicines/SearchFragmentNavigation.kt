@@ -85,6 +85,9 @@ class SearchFragmentNavigation : Fragment(),
             false
         )
 
+        //set title
+        (activity as KotlinMainActivity).setTitle(getString(R.string.titleSearch))
+
         //Get the viewmodel
         viewModel = ViewModelProvider(this).get(SearchFragmentNavigationViewModel::class.java)
         //viewModel.setStringOfEditText(binding.autoSearchNavigation.text.toString().trim())

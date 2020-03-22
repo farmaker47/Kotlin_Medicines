@@ -76,6 +76,8 @@ class IngredientFragment : Fragment() {
             false
         )
 
+        (activity as KotlinMainActivity).setTitle(getString(R.string.titleIngredient))
+
         //set header
         ingredientViewModel = ViewModelProvider(this).get(IngredientFragmentViewModel::class.java)
         binding.ingredient = IngredientClass(ingredient_name, "")

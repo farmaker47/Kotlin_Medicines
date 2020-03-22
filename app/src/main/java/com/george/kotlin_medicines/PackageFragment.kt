@@ -79,6 +79,10 @@ class PackageFragment : Fragment() {
             container,
             false
         )
+
+        //set title
+        (activity as KotlinMainActivity).setTitle(getString(R.string.titleDetails))
+
         //Request permissions to read and write
         ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 112)
         packageViewModel = ViewModelProvider(this).get(PackageFragmentViewModel::class.java)

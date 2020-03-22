@@ -86,15 +86,14 @@ class SearchFragmentNavigation : Fragment(),
         )
 
         //set title
-        (activity as KotlinMainActivity).setTitle(getString(R.string.titleSearch))
+        activity?.title = getString(R.string.titleSearch)
 
         //Get the viewmodel
         viewModel = ViewModelProvider(this).get(SearchFragmentNavigationViewModel::class.java)
         //viewModel.setStringOfEditText(binding.autoSearchNavigation.text.toString().trim())
 
         //Upon creation we check if there is internet connection
-        val connMgr =
-            activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connMgr = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected) {

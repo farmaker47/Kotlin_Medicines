@@ -76,7 +76,8 @@ class IngredientFragment : Fragment() {
             false
         )
 
-        (activity as KotlinMainActivity).setTitle(getString(R.string.titleIngredient))
+        //set title at nav graph when setting up button at mainactivity
+        activity?.title = getString(R.string.titleIngredient)
 
         //set header
         ingredientViewModel = ViewModelProvider(this).get(IngredientFragmentViewModel::class.java)

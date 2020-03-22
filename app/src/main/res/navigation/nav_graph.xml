@@ -6,8 +6,7 @@
     app:startDestination="@id/searchFragmentNavigation">
     <fragment
         android:id="@+id/searchFragmentNavigation"
-        android:name="com.george.kotlin_medicines.SearchFragmentNavigation"
-        android:label="SearchFragmentNavigation" >
+        android:name="com.george.kotlin_medicines.SearchFragmentNavigation">
         <action
             android:id="@+id/action_searchFragmentNavigation_to_packageFragment"
             app:destination="@id/packageFragment"
@@ -18,8 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/packageFragment"
-        android:name="com.george.kotlin_medicines.PackageFragment"
-        android:label="PackageFragment" >
+        android:name="com.george.kotlin_medicines.PackageFragment">
         <action
             android:id="@+id/action_packageFragment_to_searchFragmentNavigation"
             app:destination="@id/searchFragmentNavigation" />
@@ -30,7 +28,6 @@
     <fragment
         android:id="@+id/ingredientFragment"
         android:name="com.george.kotlin_medicines.IngredientFragment"
-        android:label="fragment_ingredient"
         tools:layout="@layout/fragment_ingredient" >
         <action
             android:id="@+id/action_ingredientFragment_to_packageFragment"

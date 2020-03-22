@@ -11,9 +11,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.ahmadrosid.svgloader.SvgLoader
 import com.george.kotlin_medicines.databinding.FragmentIngredientBinding
+import com.george.view_models.IngredientFragmentViewModel
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_ingredient.*
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -37,6 +40,7 @@ class IngredientFragment : Fragment() {
     private var ingredient_name: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentIngredientBinding
+    private lateinit var ingredientViewModel: IngredientFragmentViewModel
 
     private var ingredientName = ""
     private val DRUGS_CA = "https://www.drugbank.ca/drugs"
@@ -71,14 +75,40 @@ class IngredientFragment : Fragment() {
             false
         )
 
-        pingAndGet(DRUGS_CA)
+        //set header
+        binding.textDrastiki.text = ingredient_name
+
+        ingredientViewModel = ViewModelProvider(this).get(IngredientFragmentViewModel::class.java)
+        ingredientViewModel.setStringOfHeader(ingredient_name.toString())
+
+        if (savedInstanceState == null) {
+            pingAndGet(DRUGS_CA)
+        } else {
+            //setHeader
+            binding.textDrastiki.text = ingredientViewModel.stringOfHeader
+            //hide progressbar
+            binding.progressIngredient.visibility = View.INVISIBLE
+
+            //set text
+            binding.expandTextView.text = ingredientViewModel.stringOfText
+            //set image
+            SvgLoader.pluck()
+                .with(activity)
+                .setPlaceHolder(R.drawable.recipe_icon, R.drawable.recipe_icon)
+                .load(
+                    ingredientViewModel.stringOfImage,
+                    binding.imageMeds
+                )
+
+        }
+
 
         Log.v("NAME", "$ingredient_name")
         return binding.root
     }
 
     //Fetch structure and description
-    private fun pingAndGet(url : String) {
+    private fun pingAndGet(url: String) {
         arrayForChoiceText = ArrayList<String>()
         arrayForChoiceUrl = ArrayList()
         builderImage = java.lang.StringBuilder()
@@ -91,9 +121,9 @@ class IngredientFragment : Fragment() {
             try {
                 if (url == DRUGS_CA) {
                     val loginFormResponse = Jsoup.connect(DRUGS_CA)
-                            .method(Connection.Method.GET)
-                            .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
-                            .execute()
+                        .method(Connection.Method.GET)
+                        .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+                        .execute()
                     cookies.putAll(loginFormResponse.cookies())
                     //Log.e("Cookies", cookies.toString())
                     //find the form
@@ -107,10 +137,10 @@ class IngredientFragment : Fragment() {
 
                     //execute
                     val loginActionResponse = loginForm.submit()
-                            .data(".search-query", ".search-query")
-                            .cookies(loginFormResponse.cookies())
-                            .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
-                            .execute()
+                        .data(".search-query", ".search-query")
+                        .cookies(loginFormResponse.cookies())
+                        .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+                        .execute()
                     val arrayForTextView = ArrayList<String>()
                     builderImage!!.append("https://www.drugbank.ca")
                     val doc = loginActionResponse.parse()
@@ -130,8 +160,8 @@ class IngredientFragment : Fragment() {
                             parsedText = element.attr("href")
                         }
                         builderImage!!.append(parsedText)
-
-                        //Log.e("IMAGE", builderImage.toString())
+                        //to viewmodel
+                        ingredientViewModel.setStringOfImage(builderImage.toString())
 
                         //text
                         val tag = doc.getElementsByTag("p")
@@ -162,6 +192,8 @@ class IngredientFragment : Fragment() {
                                 .append(arrayForTextView[3])
                         }
                         parsedInfo = builderInfo.toString()
+                        //to viewmodel
+                        ingredientViewModel.setStringText(parsedInfo.toString())
                     } else if (checkElement(
                             doc.select("div[class=unearth-search-hit my-1]")
                                 .select("h2[class=hit-link]").first()
@@ -212,8 +244,8 @@ class IngredientFragment : Fragment() {
                             parsedText = element.attr("href")
                         }
                         builderImage!!.append(parsedText)
-                        Log.e("IMAGE_NOT_DRUGS", "IMAGE_NOT_DRUGS")
-                        Log.e("IMAGE_NOT_DRUGS", builderImage.toString())
+                        //to viewmodel
+                        ingredientViewModel.setStringOfImage(builderImage.toString())
 
                         //text
                         val tag = doc.getElementsByTag("p")
@@ -244,6 +276,9 @@ class IngredientFragment : Fragment() {
                                 .append(arrayForTextView[3])
                         }
                         parsedInfo = builderInfo.toString()
+
+                        //to viewmodel
+                        ingredientViewModel.setStringText(parsedInfo.toString())
                     } else if (checkElement(
                             doc.select("div[class=unearth-search-hit my-1]")
                                 .select("h2[class=hit-link]").first()
@@ -305,7 +340,7 @@ class IngredientFragment : Fragment() {
                         getString(R.string.noresultTryBelow)
                     for (i in arrayForChoiceUrl!!.indices) {
                         val name: String = arrayForChoiceText!!.get(i)
-                        val urlText = arrayForChoiceUrl!![i]
+                        //val urlText = arrayForChoiceUrl!![i]
 
                         //Creating a view
                         val ingredient = TextView(activity)
@@ -322,7 +357,7 @@ class IngredientFragment : Fragment() {
                         ingredient.setTextColor(Color.BLUE)
                         ingredient
                             .setOnClickListener { /*Toast.makeText(IngredientActivity.this,  urlText, Toast.LENGTH_LONG).show();*/
-                                ingredientName = arrayForChoiceText!!.get(i)
+                                ingredient_name = arrayForChoiceText!!.get(i)
                                 binding.progressIngredient.visibility = View.VISIBLE
                                 binding.imageMeds.setImageDrawable(null)
                                 pingAndGet(DRUGS_CA)

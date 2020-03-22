@@ -1,6 +1,7 @@
 package com.george.kotlin_medicines
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,12 @@ class SearchFragmentNavigationAdapter(
         ) {
             binding.textViewFragmentAdapter.text = hitsList!![position]
             binding.imageFragmentAdapter.setImageResource(R.drawable.medicine)
+            //apply transition name
+            binding.imageFragmentAdapter.apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    transitionName = "transition_photo"
+                }
+            }
         }
     }
 
@@ -81,9 +88,12 @@ class SearchFragmentNavigationAdapter(
     }
 
     companion object {
-        private fun from(searchFragmentNavigationAdapter: SearchFragmentNavigationAdapter, parent: ViewGroup): NavigationAdapterViewHolder {
+        private fun from(
+            searchFragmentNavigationAdapter: SearchFragmentNavigationAdapter,
+            parent: ViewGroup
+        ): NavigationAdapterViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = SearchFragmentAdapterBinding.inflate(inflater,parent,false)
+            val binding = SearchFragmentAdapterBinding.inflate(inflater, parent, false)
 
             /*return NavigationAdapterViewHolder(
                 LayoutInflater.from(parent.context)
@@ -95,7 +105,7 @@ class SearchFragmentNavigationAdapter(
 
 }
 
-class HitListDiffCallBack : DiffUtil.ItemCallback<ArrayList<String>?>(){
+class HitListDiffCallBack : DiffUtil.ItemCallback<ArrayList<String>?>() {
 
     override fun areContentsTheSame(
         oldItem: ArrayList<String>,

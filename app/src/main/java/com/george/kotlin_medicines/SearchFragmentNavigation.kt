@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -93,7 +94,8 @@ class SearchFragmentNavigation : Fragment(),
         //viewModel.setStringOfEditText(binding.autoSearchNavigation.text.toString().trim())
 
         //Upon creation we check if there is internet connection
-        val connMgr = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connMgr =
+            activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected) {
@@ -296,9 +298,18 @@ class SearchFragmentNavigation : Fragment(),
                     sharedImage,
                     sharedImage!!.transitionName
                 ).toBundle()*/
-            findNavController().navigate(
+            val extras = FragmentNavigatorExtras(
+                sharedImage to "transition_photo"
+            )
+
+            val action = SearchFragmentNavigationDirections.actionSearchFragmentNavigationToPackageFragment(uri = "transition_photo")
+            /*findNavController().navigate(
                 R.id.action_searchFragmentNavigation_to_packageFragment,
                 bundle
+            )*/
+            findNavController().navigate(
+                action,
+                extras
             )
         } else {
 

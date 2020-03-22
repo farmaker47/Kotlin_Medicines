@@ -27,6 +27,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import com.george.kotlin_medicines.databinding.ActivityScrollingDetailsFragmentBinding
 import com.george.view_models.PackageFragmentViewModel
 import com.squareup.picasso.Picasso
@@ -60,6 +62,7 @@ class PackageFragment : Fragment() {
     private lateinit var binding: ActivityScrollingDetailsFragmentBinding
     private var cookieStringStripped: String? = null
     private lateinit var packageViewModel: PackageFragmentViewModel
+    private val args: PackageFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +70,13 @@ class PackageFragment : Fragment() {
             medicine_name = it.getString(NAME_OF_MEDICINES)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        //shared element transition
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition =
+                TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        }
+
     }
 
     override fun onCreateView(
@@ -82,6 +92,15 @@ class PackageFragment : Fragment() {
 
         //set title
         activity?.title = getString(R.string.titleDetails)
+
+        //get args
+        val imageUri = args.uri
+        Log.e("URI",imageUri)
+        binding.dummyImageViewShared.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transitionName = imageUri
+            }
+        }
 
         //Request permissions to read and write
         ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 112)
@@ -118,7 +137,7 @@ class PackageFragment : Fragment() {
             //Clear All and load url
             //Clear All and load url
             binding.webViewPackage.loadUrl(URL_TO_SERVE)
-        }else{
+        } else {
             parseAllInfo(packageViewModel.stringOfHtml)
             cookieStringStripped = packageViewModel.stringCookies
         }

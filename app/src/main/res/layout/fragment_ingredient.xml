@@ -4,6 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="ingredient"
+            type="com.george.kotlin_medicines.IngredientClass" />
+    </data>
+
+
     <RelativeLayout
         android:id="@+id/relative1"
         android:layout_width="match_parent"
@@ -51,7 +58,8 @@
                             android:layout_margin="16dp"
                             android:textAlignment="center"
                             android:textColor="#060606"
-                            android:textSize="24sp" />
+                            android:textSize="24sp"
+                            android:text="@{ingredient.header}"/>
 
                         <ImageView
                             android:id="@+id/imageMeds"

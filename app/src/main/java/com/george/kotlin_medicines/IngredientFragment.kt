@@ -54,6 +54,7 @@ class IngredientFragment : Fragment() {
     private val TAG = "DrastikiImage"
     private val drastikiGeneral: String? = null
     var isActive = false
+    //private val ingredientForDisplay : IngredientClass = IngredientClass("george","soloupis")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,20 +77,37 @@ class IngredientFragment : Fragment() {
         )
 
         //set header
-        binding.textDrastiki.text = ingredient_name
-
         ingredientViewModel = ViewModelProvider(this).get(IngredientFragmentViewModel::class.java)
-        ingredientViewModel.setStringOfHeader(ingredient_name.toString())
+        binding.ingredient = IngredientClass(ingredient_name, "")
+        //ingredientViewModel.setStringOfHeader(ingredient_name.toString())
+        binding.setLifecycleOwner(this)
+
+        ingredientViewModel.stringOfHeader.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { headerText ->
+                binding.textDrastiki.text = headerText
+
+            })
+
+        /*ingredientViewModel.stringOfText.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { expandedText ->
+                binding.expandTextView.text = expandedText
+
+            })*/
+
+
 
         if (savedInstanceState == null) {
             pingAndGet(DRUGS_CA)
         } else {
             //setHeader
-            binding.textDrastiki.text = ingredientViewModel.stringOfHeader
+            //binding.textDrastiki.text = ingredientViewModel.stringOfHeader
             //hide progressbar
             binding.progressIngredient.visibility = View.INVISIBLE
 
             //set text
+            //binding.ingredient = IngredientClass(ingredient_name, ingredientViewModel.stringOfText)
             binding.expandTextView.text = ingredientViewModel.stringOfText
             //set image
             SvgLoader.pluck()
@@ -322,20 +340,19 @@ class IngredientFragment : Fragment() {
                         )
                     binding.expandTextView.text =
                         parsedInfo
-                    binding.textDrastiki.text =
-                        ingredientName
+                    //binding.textDrastiki.text = ingredientName
                     binding.linearDrastiki.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && isPresent) {
                     binding.progressIngredient.visibility = View.INVISIBLE
                     Picasso.get().load(R.drawable.recipe_icon).into(binding.imageMeds)
                     binding.expandTextView.text = getString(R.string.drastikiNoResults)
-                    Log.e("LATHOS1", builderImage.toString())
+                    Log.i("LATHOS1", builderImage.toString())
                     binding.linearDrastiki.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && !isPresent) {
                     binding.progressIngredient.visibility = View.INVISIBLE
                     Picasso.get().load(R.drawable.recipe_icon).into(binding.imageMeds)
-                    binding.textDrastiki.text = ingredientName
-                    Log.e("LATHOS2", builderImage.toString())
+                    //binding.textDrastiki.text = ingredientName
+                    Log.i("LATHOS2", builderImage.toString())
                     binding.expandTextView.text =
                         getString(R.string.noresultTryBelow)
                     for (i in arrayForChoiceUrl!!.indices) {
@@ -404,4 +421,8 @@ class IngredientFragment : Fragment() {
             Log.e("YES_EXIST_ALL", html.substring(start, end))
         }
     }
+
+
 }
+
+data class IngredientClass(var header: String?, var expandedText: String?)

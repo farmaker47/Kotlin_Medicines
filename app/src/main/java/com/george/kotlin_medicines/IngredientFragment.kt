@@ -33,7 +33,7 @@ private const val NAME_OF_MEDICINES = "name_of_medicines"
  * create an instance of this fragment.
  */
 class IngredientFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var ingredient_name: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentIngredientBinding
@@ -71,14 +71,14 @@ class IngredientFragment : Fragment() {
             false
         )
 
-        DRUGS_CA.pingAndGet()
+        pingAndGet(DRUGS_CA)
 
         Log.v("NAME", "$ingredient_name")
         return binding.root
     }
 
     //Fetch structure and description
-    private fun String.pingAndGet() {
+    private fun pingAndGet(url : String) {
         arrayForChoiceText = ArrayList<String>()
         arrayForChoiceUrl = ArrayList()
         builderImage = java.lang.StringBuilder()
@@ -87,115 +87,117 @@ class IngredientFragment : Fragment() {
         binding.expandTextView.text = ""
 
         Thread(Runnable {
-            val cookies =
-                HashMap<String, String>()
+            val cookies = HashMap<String, String>()
             try {
-                if (this == "https://www.drugbank.ca/drugs") {
-                    val loginFormResponse =
-                        Jsoup.connect(DRUGS_CA)
+                if (url == DRUGS_CA) {
+                    val loginFormResponse = Jsoup.connect(DRUGS_CA)
                             .method(Connection.Method.GET)
                             .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
                             .execute()
                     cookies.putAll(loginFormResponse.cookies())
+                    //Log.e("Cookies", cookies.toString())
                     //find the form
                     val loginForm = loginFormResponse.parse()
                         .select(".form-inline").first() as FormElement
 
                     //fill info in element
-                    if (loginForm != null) {
-                        val loginField =
-                            loginForm.select(".search-query").first()
-                        loginField?.`val`(ingredientName)
+                    val loginField = loginForm.select(".search-query").first()
+                    //loginField?.`val`(ingredientName)
+                    loginField?.attr("value", ingredient_name)
 
-                        //execute
-                        val loginActionResponse =
-                            loginForm.submit()
-                                .data(".search-query", ".search-query")
-                                .cookies(loginFormResponse.cookies())
-                                .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
-                                .execute()
-                        val arrayForTextView =
-                            ArrayList<String>()
-                        builderImage!!.append("https://www.drugbank.ca")
-                        val doc = loginActionResponse.parse()
-                        //check if table exists
-                        if (checkElement(
-                                doc.select("a[class=moldbi-vector-thumbnail]").first()
-                            )
-                        ) {
-                            val imageUrl =
-                                doc.select("a[class=moldbi-vector-thumbnail]")
-                            for (element in imageUrl) {
-                                parsedText = element.attr("href")
-                            }
-                            builderImage!!.append(parsedText)
+                    //execute
+                    val loginActionResponse = loginForm.submit()
+                            .data(".search-query", ".search-query")
+                            .cookies(loginFormResponse.cookies())
+                            .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+                            .execute()
+                    val arrayForTextView = ArrayList<String>()
+                    builderImage!!.append("https://www.drugbank.ca")
+                    val doc = loginActionResponse.parse()
+                    //check if table exists
+                    //Log.e("IMAGE", doc.toString())
+                    //logAll(doc.toString())
+                    //Log.e("IMAGE", builderImage.toString())
 
-                            //text
-                            val tag = doc.getElementsByTag("p")
-                            for (element in tag) {
-                                val text = element.text()
-                                arrayForTextView.add(text)
-                            }
-                            if (arrayForTextView.size == 0) {
-                                builderInfo!!.append("No text to display")
-                            } else if (arrayForTextView.size == 1) {
-                                builderInfo!!.append(arrayForTextView[0])
-                            } else if (arrayForTextView.size == 2) {
-                                builderInfo!!.append(arrayForTextView[0]).append("\n\n")
-                                    .append(arrayForTextView[1])
-                            } else if (arrayForTextView.size == 3) {
-                                builderInfo!!.append(arrayForTextView[0]).append("\n\n")
-                                    .append(arrayForTextView[1]).append("\n\n")
-                                    .append(arrayForTextView[2])
-                            } else if (arrayForTextView.size == 4) {
-                                builderInfo!!.append(arrayForTextView[0]).append("\n\n")
-                                    .append(arrayForTextView[1]).append("\n\n")
-                                    .append(arrayForTextView[2]).append("\n\n")
-                                    .append(arrayForTextView[3])
-                            } else {
-                                builderInfo!!.append(arrayForTextView[0]).append("\n\n")
-                                    .append(arrayForTextView[1]).append("\n\n")
-                                    .append(arrayForTextView[2]).append("\n\n")
-                                    .append(arrayForTextView[3])
-                            }
-                            parsedInfo = builderInfo.toString()
-                        } else if (checkElement(
-                                doc.select("div[class=unearth-search-hit my-1]")
-                                    .select("h2[class=hit-link]").first()
-                            )
-                        ) {
-                            isPresent = false
-                            val names =
-                                doc.select("div[class=unearth-search-hit my-1]")
-                                    .select("h2[class=hit-link]")
-                            for (element in names) {
-                                val text = element.text()
-                                arrayForChoiceText!!.add(text)
-                                val aElem =
-                                    element.getElementsByTag("a")
-                                for (small in aElem) {
-                                    val link = small.attr("href")
-                                    arrayForChoiceUrl!!.add(link)
-                                }
-                            }
-                        } else if (!checkElement(
-                                doc.select("div[class=unearth-search-hit my-1]")
-                                    .select("h2[class=hit-link]").first()
-                            )
-                        ) {
-                            isPresent = true
+                    if (checkElement(
+                            doc.select("a[class=moldbi-vector-thumbnail]").first()
+                        )
+                    ) {
+                        //image
+                        val imageUrl =
+                            doc.select("a[class=moldbi-vector-thumbnail]")
+                        for (element in imageUrl) {
+                            parsedText = element.attr("href")
                         }
-                        val rows =
-                            doc.select("dd[class=col-md-10 col-sm-8]")
+                        builderImage!!.append(parsedText)
+
+                        //Log.e("IMAGE", builderImage.toString())
+
+                        //text
+                        val tag = doc.getElementsByTag("p")
+                        for (element in tag) {
+                            val text = element.text()
+                            arrayForTextView.add(text)
+                        }
+                        if (arrayForTextView.size == 0) {
+                            builderInfo!!.append("No text to display")
+                        } else if (arrayForTextView.size == 1) {
+                            builderInfo!!.append(arrayForTextView[0])
+                        } else if (arrayForTextView.size == 2) {
+                            builderInfo!!.append(arrayForTextView[0]).append("\n\n")
+                                .append(arrayForTextView[1])
+                        } else if (arrayForTextView.size == 3) {
+                            builderInfo!!.append(arrayForTextView[0]).append("\n\n")
+                                .append(arrayForTextView[1]).append("\n\n")
+                                .append(arrayForTextView[2])
+                        } else if (arrayForTextView.size == 4) {
+                            builderInfo!!.append(arrayForTextView[0]).append("\n\n")
+                                .append(arrayForTextView[1]).append("\n\n")
+                                .append(arrayForTextView[2]).append("\n\n")
+                                .append(arrayForTextView[3])
+                        } else {
+                            builderInfo!!.append(arrayForTextView[0]).append("\n\n")
+                                .append(arrayForTextView[1]).append("\n\n")
+                                .append(arrayForTextView[2]).append("\n\n")
+                                .append(arrayForTextView[3])
+                        }
+                        parsedInfo = builderInfo.toString()
+                    } else if (checkElement(
+                            doc.select("div[class=unearth-search-hit my-1]")
+                                .select("h2[class=hit-link]").first()
+                        )
+                    ) {
+                        isPresent = false
+                        val names =
+                            doc.select("div[class=unearth-search-hit my-1]")
+                                .select("h2[class=hit-link]")
+                        for (element in names) {
+                            val text = element.text()
+                            arrayForChoiceText!!.add(text)
+                            val aElem =
+                                element.getElementsByTag("a")
+                            for (small in aElem) {
+                                val link = small.attr("href")
+                                arrayForChoiceUrl!!.add(link)
+                            }
+                        }
+                    } else if (!checkElement(
+                            doc.select("div[class=unearth-search-hit my-1]")
+                                .select("h2[class=hit-link]").first()
+                        )
+                    ) {
+                        isPresent = true
                     }
+                    //val rows = doc.select("dd[class=col-md-10 col-sm-8]")
+
+
                 } else {
                     val loginFormResponseTrial =
-                        Jsoup.connect(this)
+                        Jsoup.connect(DRUGS_CA)
                             .method(Connection.Method.GET)
                             .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
                             .execute()
-                    val arrayForTextView =
-                        ArrayList<String>()
+                    val arrayForTextView = ArrayList<String>()
                     builderImage!!.append("https://www.drugbank.ca")
                     val doc = loginFormResponseTrial.parse()
                     //check if table exists
@@ -203,12 +205,16 @@ class IngredientFragment : Fragment() {
                             doc.select("a[class=moldbi-vector-thumbnail]").first()
                         )
                     ) {
+                        //image
                         val imageUrl =
                             doc.select("a[class=moldbi-vector-thumbnail]")
                         for (element in imageUrl) {
                             parsedText = element.attr("href")
                         }
                         builderImage!!.append(parsedText)
+                        Log.e("IMAGE_NOT_DRUGS", "IMAGE_NOT_DRUGS")
+                        Log.e("IMAGE_NOT_DRUGS", builderImage.toString())
+
                         //text
                         val tag = doc.getElementsByTag("p")
                         for (element in tag) {
@@ -268,6 +274,7 @@ class IngredientFragment : Fragment() {
                 e.printStackTrace()
             }
 
+            //run on UI
             activity!!.runOnUiThread {
                 if (builderImage.toString() != "https://www.drugbank.ca") {
                     binding.progressIngredient.visibility = View.INVISIBLE
@@ -286,16 +293,14 @@ class IngredientFragment : Fragment() {
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && isPresent) {
                     binding.progressIngredient.visibility = View.INVISIBLE
                     Picasso.get().load(R.drawable.recipe_icon).into(binding.imageMeds)
-                    binding.expandTextView.text =
-                        getString(R.string.drastikiNoResults)
-                    Log.i("LATHOS1", builderImage.toString())
+                    binding.expandTextView.text = getString(R.string.drastikiNoResults)
+                    Log.e("LATHOS1", builderImage.toString())
                     binding.linearDrastiki.visibility = View.VISIBLE
                 } else if (builderImage.toString() == "https://www.drugbank.ca" && !isPresent) {
                     binding.progressIngredient.visibility = View.INVISIBLE
                     Picasso.get().load(R.drawable.recipe_icon).into(binding.imageMeds)
-                    binding.textDrastiki.text =
-                        ingredientName
-                    Log.i("LATHOS2", builderImage.toString())
+                    binding.textDrastiki.text = ingredientName
+                    Log.e("LATHOS2", builderImage.toString())
                     binding.expandTextView.text =
                         getString(R.string.noresultTryBelow)
                     for (i in arrayForChoiceUrl!!.indices) {
@@ -320,7 +325,7 @@ class IngredientFragment : Fragment() {
                                 ingredientName = arrayForChoiceText!!.get(i)
                                 binding.progressIngredient.visibility = View.VISIBLE
                                 binding.imageMeds.setImageDrawable(null)
-                                DRUGS_CA.pingAndGet()
+                                pingAndGet(DRUGS_CA)
                                 binding.linearChoice.removeAllViews()
                             }
                         binding.linearChoice.addView(ingredient)
@@ -353,5 +358,15 @@ class IngredientFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    private fun logAll(html: String) {
+        val maxLogSize = 1000
+        for (i in 0..html.length / maxLogSize) {
+            val start = i * maxLogSize
+            var end = (i + 1) * maxLogSize
+            end = if (end > html.length) html.length else end
+            Log.e("YES_EXIST_ALL", html.substring(start, end))
+        }
     }
 }

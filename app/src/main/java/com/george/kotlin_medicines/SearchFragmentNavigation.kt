@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.JsonReader
@@ -22,11 +23,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
@@ -39,6 +42,7 @@ import org.jsoup.nodes.Element
 import java.io.IOException
 import java.io.StringReader
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,14 +78,24 @@ class SearchFragmentNavigation : Fragment(),
             param2 = it.getString(ARG_PARAM2)
         }
 
+        //postponeEnterTransition()
+
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            sharedElementEnterTransition =
-                TransitionInflater.from(context)
-                    .inflateTransition(android.R.transition.move)
             sharedElementReturnTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
         }*/
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        // Data is loaded so lets wait for our parent to be drawn
+        /*(view?.parent as? ViewGroup)?.doOnPreDraw {
+            // Parent has been drawn. Start transitioning!
+            startPostponedEnterTransition()
+        }*/
+
+        //postponeEnterTransition()
     }
 
     override fun onCreateView(
@@ -95,6 +109,10 @@ class SearchFragmentNavigation : Fragment(),
             container,
             false
         )
+
+        /*sharedElementEnterTransition =
+            TransitionInflater.from(context)
+                .inflateTransition(android.R.transition.move)*/
 
         //set title
         activity?.title = getString(R.string.titleSearch)
@@ -225,7 +243,16 @@ class SearchFragmentNavigation : Fragment(),
         binding.webViewEof.loadUrl(URL_TO_SERVE)
 
 
+        /*(binding.recyclerViewSearchFragment.parent as? ViewGroup)?.doOnPreDraw {
+            // Parent has been drawn. Start transitioning!
+            startPostponedEnterTransition()
+        }*/
 
+
+
+        //postponeEnterTransition(1, TimeUnit.SECONDS)
+        //postponeEnterTransition()
+        //binding.recyclerViewSearchFragment.doOnPreDraw { startPostponedEnterTransition() }
         return binding.root
     }
 
@@ -240,12 +267,13 @@ class SearchFragmentNavigation : Fragment(),
                 val handler = Handler()
                 handler.postDelayed(
                     { binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:btnBack');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()") },
-                    500
+                    200
                 )
             }
         })
 
         binding.webViewEof.loadUrl(URL_TO_SERVE)
+
     }
 
     companion object {

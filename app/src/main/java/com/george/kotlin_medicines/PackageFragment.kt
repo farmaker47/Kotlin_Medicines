@@ -58,7 +58,6 @@ private const val URL_FOR_PDFs = "https://services.eof.gr"
  * create an instance of this fragment.
  */
 class PackageFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var medicine_name: String? = null
     private var param2: String? = null
     private lateinit var binding: ActivityScrollingDetailsFragmentBinding
@@ -78,9 +77,10 @@ class PackageFragment : Fragment() {
             sharedElementEnterTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
-            //sharedElementReturnTransition =
+            sharedElementReturnTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
+
         }
         /*val handler = Handler()
         handler.postDelayed(
@@ -136,6 +136,7 @@ class PackageFragment : Fragment() {
 
         //load url and fetch info if savedInstanceState is null
         if (savedInstanceState == null) {
+            Log.e("NULL","NULL")
             binding.webViewPackage.webViewClient = object : WebViewClient() {
 
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -165,7 +166,6 @@ class PackageFragment : Fragment() {
 
         //Request permissions to read and write
         ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 112)
-
         return binding.root
     }
 

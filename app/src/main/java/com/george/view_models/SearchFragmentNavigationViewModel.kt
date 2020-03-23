@@ -1,5 +1,6 @@
 package com.george.view_models
 
+import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 
@@ -13,6 +14,7 @@ class SearchFragmentNavigationViewModel : ViewModel() {
     val stringOfEditText: String
         get() = _stringOfEditText
 
+
     init {
         _currentList = ArrayList()
         _stringOfEditText = String()
@@ -25,7 +27,6 @@ class SearchFragmentNavigationViewModel : ViewModel() {
     fun setStringOfEditText(string: String) {
         _stringOfEditText = string
     }
-
 
 
 }

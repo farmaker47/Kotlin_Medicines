@@ -10,7 +10,6 @@
             type="com.george.kotlin_medicines.IngredientClass" />
     </data>
 
-
     <RelativeLayout
         android:id="@+id/relative1"
         android:layout_width="match_parent"

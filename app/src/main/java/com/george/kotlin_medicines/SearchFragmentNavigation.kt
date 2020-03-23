@@ -79,12 +79,6 @@ class SearchFragmentNavigation : Fragment(),
         }
 
         //postponeEnterTransition()
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            sharedElementReturnTransition =
-                TransitionInflater.from(context)
-                    .inflateTransition(android.R.transition.move)
-        }*/
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,10 +103,6 @@ class SearchFragmentNavigation : Fragment(),
             container,
             false
         )
-
-        /*sharedElementEnterTransition =
-            TransitionInflater.from(context)
-                .inflateTransition(android.R.transition.move)*/
 
         //set title
         activity?.title = getString(R.string.titleSearch)
@@ -253,6 +243,8 @@ class SearchFragmentNavigation : Fragment(),
         //postponeEnterTransition(1, TimeUnit.SECONDS)
         //postponeEnterTransition()
         //binding.recyclerViewSearchFragment.doOnPreDraw { startPostponedEnterTransition() }
+
+
         return binding.root
     }
 

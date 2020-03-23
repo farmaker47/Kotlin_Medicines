@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
@@ -76,10 +77,10 @@ class PackageFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sharedElementEnterTransition =
                 TransitionInflater.from(context)
-                    .inflateTransition(android.R.transition.move)
+                    .inflateTransition(R.transition.move)
             sharedElementReturnTransition =
                 TransitionInflater.from(context)
-                    .inflateTransition(android.R.transition.move)
+                    .inflateTransition(R.transition.move)
 
         }
         /*val handler = Handler()
@@ -659,4 +660,6 @@ class PackageFragment : Fragment() {
                 }
             }
     }
+
+
 }

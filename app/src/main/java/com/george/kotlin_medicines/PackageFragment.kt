@@ -78,7 +78,7 @@ class PackageFragment : Fragment() {
             sharedElementEnterTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
-            sharedElementReturnTransition =
+            //sharedElementReturnTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
         }

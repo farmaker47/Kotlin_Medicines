@@ -74,14 +74,14 @@ class SearchFragmentNavigation : Fragment(),
             param2 = it.getString(ARG_PARAM2)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sharedElementEnterTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
             sharedElementReturnTransition =
                 TransitionInflater.from(context)
                     .inflateTransition(android.R.transition.move)
-        }
+        }*/
     }
 
     override fun onCreateView(
@@ -285,7 +285,7 @@ class SearchFragmentNavigation : Fragment(),
     }
 
     override fun onListItemClick(itemIndex: Int, sharedImage: ImageView?, type: String?) {
-        Log.e("Clicked", type)
+        Log.i("Clicked", type)
         //click specific item position
         binding.webViewEof.loadUrl("javascript:(function(){l=document.getElementById('form1:tblResults:$itemIndex:lnkDRNAME');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()")
 
@@ -309,7 +309,7 @@ class SearchFragmentNavigation : Fragment(),
                     sharedImage!!.transitionName
                 ).toBundle()*/
             val extras = FragmentNavigatorExtras(
-                sharedImage to "transition_photo"
+                sharedImage to getString(R.string.transition_photo)
             )
 
             //val action = SearchFragmentNavigationDirections.actionSearchFragmentNavigationToPackageFragment(uri = "transition_photo")

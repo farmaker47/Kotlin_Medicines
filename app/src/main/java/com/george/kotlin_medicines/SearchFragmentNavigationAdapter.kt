@@ -66,7 +66,7 @@ class SearchFragmentNavigationAdapter(
 
         init {
             itemView.setOnClickListener{
-                ViewCompat.setTransitionName(binding.imageFragmentAdapter, "transition_photo")
+                ViewCompat.setTransitionName(binding.imageFragmentAdapter, mContext.getString(R.string.transition_photo))
                 onClick(binding.imageFragmentAdapter)
             }
         }
@@ -76,12 +76,6 @@ class SearchFragmentNavigationAdapter(
         ) {
             binding.textViewFragmentAdapter.text = hitsList!![position]
             binding.imageFragmentAdapter.setImageResource(R.drawable.medicine)
-            //apply transition name
-            /*binding.imageFragmentAdapter.apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding.imageFragmentAdapter.transitionName = "transition_photo"
-                }
-            }*/
         }
     }
 

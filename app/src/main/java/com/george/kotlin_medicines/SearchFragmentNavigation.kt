@@ -29,6 +29,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.george.kotlin_medicines.databinding.FragmentSearchFragmentNavigationBinding
 import com.george.view_models.SearchFragmentNavigationViewModel
 import kotlinx.android.synthetic.main.activity_scrolling_details_fragment.view.*
@@ -71,6 +72,15 @@ class SearchFragmentNavigation : Fragment(),
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition =
+                TransitionInflater.from(context)
+                    .inflateTransition(android.R.transition.move)
+            sharedElementReturnTransition =
+                TransitionInflater.from(context)
+                    .inflateTransition(android.R.transition.move)
         }
     }
 
@@ -288,7 +298,7 @@ class SearchFragmentNavigation : Fragment(),
         //making animation above api
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // bundle for the transition effect
-            Log.v("transition", sharedImage!!.transitionName)
+            Log.e("transition", sharedImage!!.transitionName)
             // bundle for the transition effect
             val bundle = Bundle()
             bundle.putString(NAME_OF_MEDICINES, type)
@@ -302,15 +312,17 @@ class SearchFragmentNavigation : Fragment(),
                 sharedImage to "transition_photo"
             )
 
-            val action = SearchFragmentNavigationDirections.actionSearchFragmentNavigationToPackageFragment(uri = "transition_photo")
-            /*findNavController().navigate(
-                R.id.action_searchFragmentNavigation_to_packageFragment,
-                bundle
-            )*/
+            //val action = SearchFragmentNavigationDirections.actionSearchFragmentNavigationToPackageFragment(uri = "transition_photo")
             findNavController().navigate(
-                action,
+                R.id.action_searchFragmentNavigation_to_packageFragment,
+                bundle,
+                null,
                 extras
             )
+            /*findNavController().navigate(
+                action,
+                extras
+            )*/
         } else {
 
             val bundleLollipop = Bundle()

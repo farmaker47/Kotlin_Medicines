@@ -1,6 +1,7 @@
 package com.george.kotlin_medicines
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -8,6 +9,7 @@ import android.graphics.Paint
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.Log
@@ -74,9 +76,29 @@ class PackageFragment : Fragment() {
         //shared element transition
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sharedElementEnterTransition =
-                TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+                TransitionInflater.from(context)
+                    .inflateTransition(android.R.transition.move)
+            sharedElementReturnTransition =
+                TransitionInflater.from(context)
+                    .inflateTransition(android.R.transition.move)
         }
+        /*val handler = Handler()
+        handler.postDelayed(
+            {
 
+            },
+            10
+        )*/
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
     }
 
     override fun onCreateView(
@@ -94,16 +116,15 @@ class PackageFragment : Fragment() {
         activity?.title = getString(R.string.titleDetails)
 
         //get args
-        val imageUri = args.uri
-        Log.e("URI",imageUri)
+        /*val imageUri = args.uri
+        Log.e("URI", imageUri)
         binding.dummyImageViewShared.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 transitionName = imageUri
             }
-        }
+        }*/
 
-        //Request permissions to read and write
-        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 112)
+        //set view model
         packageViewModel = ViewModelProvider(this).get(PackageFragmentViewModel::class.java)
 
         //set text
@@ -142,6 +163,8 @@ class PackageFragment : Fragment() {
             cookieStringStripped = packageViewModel.stringCookies
         }
 
+        //Request permissions to read and write
+        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 112)
 
         return binding.root
     }

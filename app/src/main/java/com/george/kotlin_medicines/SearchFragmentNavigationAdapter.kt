@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.george.kotlin_medicines.databinding.SearchFragmentAdapterBinding
+import kotlinx.android.synthetic.main.search_fragment_adapter.view.*
 import java.util.*
 
 class SearchFragmentNavigationAdapter(
@@ -63,7 +65,10 @@ class SearchFragmentNavigationAdapter(
         }
 
         init {
-            itemView.setOnClickListener(this)
+            itemView.setOnClickListener{
+                ViewCompat.setTransitionName(binding.imageFragmentAdapter, "transition_photo")
+                onClick(binding.imageFragmentAdapter)
+            }
         }
 
         fun bind(
@@ -72,11 +77,11 @@ class SearchFragmentNavigationAdapter(
             binding.textViewFragmentAdapter.text = hitsList!![position]
             binding.imageFragmentAdapter.setImageResource(R.drawable.medicine)
             //apply transition name
-            binding.imageFragmentAdapter.apply {
+            /*binding.imageFragmentAdapter.apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    transitionName = "transition_photo"
+                    binding.imageFragmentAdapter.transitionName = "transition_photo"
                 }
-            }
+            }*/
         }
     }
 

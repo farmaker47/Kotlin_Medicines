@@ -416,6 +416,7 @@ class SearchFragmentNavigation : Fragment(),
         return elem != null
     }
 
+    //Animation when recyclerview enters screen
     private fun runLayoutAnimation(recyclerView: RecyclerView) {
         val context = recyclerView.context
         val controller =

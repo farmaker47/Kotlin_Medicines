@@ -12,6 +12,7 @@ This project is in __Kotlin__ language and has:
 5) Custom Webview, RecyclerView, AutocompleteTextView
 
 also:
+
 6) Navigation Component usage
 7) MVVM
 8) Animations between screens

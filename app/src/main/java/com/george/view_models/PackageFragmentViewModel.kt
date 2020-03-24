@@ -24,6 +24,4 @@ class PackageFragmentViewModel : ViewModel() {
     fun setStringCookies(string: String) {
         _stringCookies = string
     }
-
-
 }

@@ -77,19 +77,9 @@ class SearchFragmentNavigation : Fragment(),
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-        //postponeEnterTransition()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        // Data is loaded so lets wait for our parent to be drawn
-        /*(view?.parent as? ViewGroup)?.doOnPreDraw {
-            // Parent has been drawn. Start transitioning!
-            startPostponedEnterTransition()
-        }*/
-
-        //postponeEnterTransition()
     }
 
     override fun onCreateView(
@@ -109,7 +99,6 @@ class SearchFragmentNavigation : Fragment(),
 
         //Get the viewmodel
         viewModel = ViewModelProvider(this).get(SearchFragmentNavigationViewModel::class.java)
-        //viewModel.setStringOfEditText(binding.autoSearchNavigation.text.toString().trim())
 
         //Upon creation we check if there is internet connection
         val connMgr =
@@ -117,7 +106,6 @@ class SearchFragmentNavigation : Fragment(),
         val networkInfo = connMgr.activeNetworkInfo
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected) {
-            //TODO
         } else {
             Toast.makeText(activity, R.string.please_connect_to_internet, Toast.LENGTH_SHORT).show()
         }
@@ -133,7 +121,6 @@ class SearchFragmentNavigation : Fragment(),
         mSearchFragmentNavigationAdapter =
             SearchFragmentNavigationAdapter(activity!!, viewModel.currentList, this)
         binding.recyclerViewSearchFragment.adapter = mSearchFragmentNavigationAdapter
-
 
         //EditText with timer
         binding.autoSearchNavigation.addTextChangedListener(object : TextWatcher {
@@ -173,13 +160,13 @@ class SearchFragmentNavigation : Fragment(),
                                         binding.autoSearchNavigation.text.toString().trim()
                                     )
                                 }
-                            } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
+                            } else if (binding.autoSearchNavigation.text.toString()
                                     .trim() == viewModel.stringOfEditText
                             ) {
                                 activity!!.runOnUiThread {
                                     Log.i("SAME_EDIT_EQUALS", viewModel.stringOfEditText)
                                 }
-                            } else if (savedInstanceState != null && binding.autoSearchNavigation.text.toString()
+                            } else if (binding.autoSearchNavigation.text.toString()
                                     .trim() != viewModel.stringOfEditText
                             ) {
                                 Log.i("SAME_EDIT_NOT_EQUALS", viewModel.stringOfEditText)
@@ -238,13 +225,9 @@ class SearchFragmentNavigation : Fragment(),
             startPostponedEnterTransition()
         }*/
 
-
-
         //postponeEnterTransition(1, TimeUnit.SECONDS)
         //postponeEnterTransition()
         //binding.recyclerViewSearchFragment.doOnPreDraw { startPostponedEnterTransition() }
-
-
         return binding.root
     }
 
@@ -313,21 +296,12 @@ class SearchFragmentNavigation : Fragment(),
         //findNavController().navigate(R.id.action_searchFragmentNavigation_to_packageFragment)
 
         //making animation above api
-
-
-        //making animation above api
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // bundle for the transition effect
-            Log.e("transition", sharedImage!!.transitionName)
+            Log.i("transition", sharedImage!!.transitionName)
             // bundle for the transition effect
             val bundle = Bundle()
             bundle.putString(NAME_OF_MEDICINES, type)
-            /*val bundle: Bundle = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(
-                    ,
-                    sharedImage,
-                    sharedImage!!.transitionName
-                ).toBundle()*/
             val extras = FragmentNavigatorExtras(
                 sharedImage to getString(R.string.transition_photo)
             )

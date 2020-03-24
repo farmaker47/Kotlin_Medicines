@@ -83,15 +83,6 @@ class PackageFragment : Fragment() {
                     .inflateTransition(R.transition.move)
 
         }
-        /*val handler = Handler()
-        handler.postDelayed(
-            {
-
-            },
-            10
-        )*/
-
-
     }
 
     override fun onResume() {
@@ -137,7 +128,6 @@ class PackageFragment : Fragment() {
 
         //load url and fetch info if savedInstanceState is null
         if (savedInstanceState == null) {
-            Log.e("NULL","NULL")
             binding.webViewPackage.webViewClient = object : WebViewClient() {
 
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -157,7 +147,6 @@ class PackageFragment : Fragment() {
 
             //Enable Javascript
             binding.webViewPackage.settings.javaScriptEnabled = true
-            //Clear All and load url
             //Clear All and load url
             binding.webViewPackage.loadUrl(URL_TO_SERVE)
         } else {
@@ -306,21 +295,9 @@ class PackageFragment : Fragment() {
                     ingredient
                         .setOnClickListener {
                             //listener for drastiki
-
-                            /*mListener.onFragmentInteractionPackage(
-                                arrayForTextView[i],
-                                arrayForTextView[i],
-                                arrayForTextView[i]
-                            )*/
-
                             val bundle = Bundle()
                             bundle.putString(NAME_OF_MEDICINES, arrayForTextView[i])
-                            /*val bundle: Bundle = ActivityOptionsCompat
-                                .makeSceneTransitionAnimation(
-                                    ,
-                                    sharedImage,
-                                    sharedImage!!.transitionName
-                                ).toBundle()*/
+
                             findNavController().navigate(
                                 R.id.action_packageFragment_to_ingredientFragment,
                                 bundle
@@ -482,8 +459,6 @@ class PackageFragment : Fragment() {
                     doc.select("td[id=form1:grdSPCLink-0-0]").select(".iceCmdLnk").first()
                 binding.perilipsiXaraktiristikonTextView.text = perilipsi.text()
 
-                /*final Element perilipsiPdf = doc.select("div[id=form1:orDrugSPC_cont]").select("a[href]").first();*/
-
                 binding.perilipsiXaraktiristikonTextView.setOnClickListener(
                     View.OnClickListener {
                         val findString = perilipsi.attr("onclick")
@@ -499,7 +474,6 @@ class PackageFragment : Fragment() {
                         }
                     })
             }
-
 
             //Filo Odigion
             if (checkElement(
@@ -611,34 +585,8 @@ class PackageFragment : Fragment() {
         }
     }
 
-    fun makeProgressBarInVisible() {
-        binding.progressBarPackage.visibility = View.GONE
-    }
-
     private fun checkElement(elem: Element?): Boolean {
         return elem != null
-    }
-
-    fun backPressButton() {
-        binding.webViewPackage.loadUrl("javascript:(function(){l=document.getElementById('form1:btnBack');e=document.createEvent('HTMLEvents');e.initEvent('click',true,true);l.dispatchEvent(e);})()")
-
-        /*if (getView() == null) {
-            return;
-        }
-
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    // handle back button's click listener
-                    return true;
-                }
-                return false;
-            }
-        });*/
     }
 
     companion object {
@@ -660,6 +608,4 @@ class PackageFragment : Fragment() {
                 }
             }
     }
-
-
 }

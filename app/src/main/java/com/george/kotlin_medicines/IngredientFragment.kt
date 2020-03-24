@@ -54,7 +54,6 @@ class IngredientFragment : Fragment() {
     private val TAG = "DrastikiImage"
     private val drastikiGeneral: String? = null
     var isActive = false
-    //private val ingredientForDisplay : IngredientClass = IngredientClass("george","soloupis")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +81,6 @@ class IngredientFragment : Fragment() {
         //set header
         ingredientViewModel = ViewModelProvider(this).get(IngredientFragmentViewModel::class.java)
         binding.ingredient = IngredientClass(ingredient_name, "")
-        //ingredientViewModel.setStringOfHeader(ingredient_name.toString())
         binding.setLifecycleOwner(this)
 
         ingredientViewModel.stringOfHeader.observe(
@@ -92,25 +90,13 @@ class IngredientFragment : Fragment() {
 
             })
 
-        /*ingredientViewModel.stringOfText.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { expandedText ->
-                binding.expandTextView.text = expandedText
-
-            })*/
-
-
-
         if (savedInstanceState == null) {
             pingAndGet(DRUGS_CA)
         } else {
-            //setHeader
-            //binding.textDrastiki.text = ingredientViewModel.stringOfHeader
             //hide progressbar
             binding.progressIngredient.visibility = View.INVISIBLE
 
             //set text
-            //binding.ingredient = IngredientClass(ingredient_name, ingredientViewModel.stringOfText)
             binding.expandTextView.text = ingredientViewModel.stringOfText
             //set image
             SvgLoader.pluck()
@@ -122,7 +108,6 @@ class IngredientFragment : Fragment() {
                 )
 
         }
-
 
         Log.v("NAME", "$ingredient_name")
         return binding.root
@@ -331,7 +316,7 @@ class IngredientFragment : Fragment() {
             }
 
             //run on UI
-            activity!!.runOnUiThread {
+            activity?.runOnUiThread {
                 if (builderImage.toString() != "https://www.drugbank.ca") {
                     binding.progressIngredient.visibility = View.INVISIBLE
                     SvgLoader.pluck()

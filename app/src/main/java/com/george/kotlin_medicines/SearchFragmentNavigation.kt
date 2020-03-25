@@ -87,12 +87,14 @@ class SearchFragmentNavigation : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(
+        /*binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_search_fragment_navigation,
             container,
             false
-        )
+        )*/
+
+        binding= FragmentSearchFragmentNavigationBinding.inflate(inflater)
 
         //set title
         activity?.title = getString(R.string.titleSearch)

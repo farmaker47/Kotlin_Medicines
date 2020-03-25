@@ -69,7 +69,10 @@ class SearchFragmentNavigation : Fragment(),
     private lateinit var mSearchFragmentNavigationAdapter: SearchFragmentNavigationAdapter
     private lateinit var timer: Timer
 
-    private lateinit var viewModel: SearchFragmentNavigationViewModel
+    //lazy to use it first time is asked
+    private val viewModel: SearchFragmentNavigationViewModel by lazy {
+        ViewModelProvider(this).get(SearchFragmentNavigationViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,9 +101,6 @@ class SearchFragmentNavigation : Fragment(),
 
         //set title
         activity?.title = getString(R.string.titleSearch)
-
-        //Get the viewmodel
-        viewModel = ViewModelProvider(this).get(SearchFragmentNavigationViewModel::class.java)
 
         //Upon creation we check if there is internet connection
         val connMgr =
